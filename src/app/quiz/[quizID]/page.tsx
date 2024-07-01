@@ -15,7 +15,7 @@ export default async function Quiz({
   }
   const runningQuizID = await getRunningQuizID(params.subjectID);
   if (!runningQuizID) {
-    // redirect(`/subjects/${params.subjectID}/quiz/${params.quizID}/grades`);
+    redirect(`/quiz/${params.quizID}/grades`);
   }
   if (runningQuizID != params.quizID) {
     throw new Error("shit");

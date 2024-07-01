@@ -23,10 +23,7 @@ export default async function Quiz({
     <div>
       {userGrades.length > 0 &&
         userGrades.map((g, k) => (
-          <Link
-            href={`/subjects/${params.subjectID}/quiz/${params.quizID}/grades/${g.id}`}
-            key={k}
-          >
+          <Link href={`/quiz/${params.quizID}/grades/${g.id}`} key={k}>
             {g.id}
           </Link>
         ))}

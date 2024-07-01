@@ -1,5 +1,3 @@
-import fs from "fs/promises";
-import { PageType, pdfToPages } from "pdf-ts";
 import { InsertEmbedding } from "@/db/schema";
 import { EmbedMany } from "@/ai/embedMany";
 import { semanticChunkPDF } from "@/utils/semanticChunk";

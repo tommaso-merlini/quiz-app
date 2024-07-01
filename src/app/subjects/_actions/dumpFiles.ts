@@ -4,8 +4,8 @@ import { db } from "@/db";
 import { embeddings, InsertEmbedding, materials } from "@/db/schema";
 import { utapi } from "@/server/uploadthing";
 import { auth } from "@clerk/nextjs/server";
-import { processPDF } from "../[subjectID]/actions";
 import { revalidatePath } from "next/cache";
+import { processPDF } from "./processPDF";
 
 export async function dumpFiles(formData: FormData) {
   const userAuth = auth();

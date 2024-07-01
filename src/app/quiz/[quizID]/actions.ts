@@ -83,5 +83,5 @@ export async function GetGrade(
   grade.answers = corrections.map((c) => c.answer);
 
   await db.insert(grades).values(grade).returning();
-  redirect(`/subjects/${subjectID}/quiz/${quizID}/grades`);
+  redirect(`/quiz/${quizID}/grades`);
 }

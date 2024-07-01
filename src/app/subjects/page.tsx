@@ -316,7 +316,7 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Go Back</AlertDialogCancel>
-            <Link href={`/subjects/${subject.id}/quiz/${runningQuizID}`}>
+            <Link href={`/quiz/${runningQuizID}`}>
               <AlertDialogAction>Finish quiz</AlertDialogAction>
             </Link>
           </AlertDialogFooter>

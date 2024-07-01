@@ -1,9 +1,7 @@
 "use server";
 
-import { quizSchema } from "@/app/subjects/[subjectID]/quiz/[quizID]/schema";
+import { quizSchema } from "@/app/quiz/[quizID]/schema";
 import { openai } from "@ai-sdk/openai";
-import { chromeai } from "chrome-ai";
-import { anthropic } from "@ai-sdk/anthropic";
 import { UserContent, generateObject } from "ai";
 
 type Options = {
