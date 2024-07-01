@@ -1,0 +1,1 @@
+ALTER TABLE "grades" RENAME COLUMN "corrections" TO "answers";

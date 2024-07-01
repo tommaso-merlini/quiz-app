@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { GeistSans } from "geist/font/sans";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +23,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={GeistSans.className}>
+          <div className="border-b-[2px] border-neutral-100 p-4">
+            <div className="flex flex-row max-w-[1300px] justify-between mx-auto">
+              <span className="text-2xl font-bold">Quizzapp</span>
+              <SignedOut>
+                <div className="flex flex-row justify-between space-x-4">
+                  <SignInButton>
+                    <Button size="sm" variant="outline">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton>
+                    <Button size="sm">Sign Up</Button>
+                  </SignUpButton>
+                </div>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
+          </div>
+          <div className="max-w-[1300px] mx-auto pt-8">{children}</div>
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
