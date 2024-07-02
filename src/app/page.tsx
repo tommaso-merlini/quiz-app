@@ -1,9 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { InstantQuizBox } from "./_components/InstantQuizBox";
-import { Navbar } from "./_components/Navbar";
 import { redirect } from "next/navigation";
-import { db } from "@/db";
-import { users } from "@/db/schema";
 
 export default async function Home() {
   const user = auth();
