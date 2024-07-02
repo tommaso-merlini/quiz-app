@@ -4,10 +4,10 @@ import { eq, ExtractTablesWithRelations } from "drizzle-orm";
 import { db } from ".";
 import { materials } from "./schema";
 import { PgTransaction } from "drizzle-orm/pg-core";
-import { VercelPgQueryResultHKT } from "drizzle-orm/vercel-postgres";
+import { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 
 type TransactionType = PgTransaction<
-  VercelPgQueryResultHKT,
+  PostgresJsQueryResultHKT,
   Record<string, never>,
   ExtractTablesWithRelations<Record<string, never>>
 >;
