@@ -18,7 +18,8 @@ export default async function getSimilarSubjectEmbeddings(
       .innerJoin(materials, eq(embeddings.materialID, materials.id))
       .innerJoin(subjects, eq(materials.subjectID, subjects.id))
       .where(eq(subjects.id, subjectID))
-      .orderBy(sql`RANDOM()`);
+      .orderBy(sql`RANDOM()`)
+      .limit(10);
     // .orderBy(sql`RANDOM() * ${sql.raw(Math.random().toString())}`);
 
     console.log("random rows", randomRows);
@@ -38,7 +39,7 @@ export default async function getSimilarSubjectEmbeddings(
     .innerJoin(subjects, eq(materials.subjectID, subjects.id))
     .where(and(eq(subjects.id, subjectID), gt(similarity, 0.3)))
     .orderBy((t) => desc(t.similarity))
-    .limit(7);
+    .limit(10);
 
   console.log("similar", similar);
   return similar;
