@@ -79,8 +79,8 @@ export function CustomizeQuizForm({
                 <SelectContent position="popper">
                   <SelectItem value="5">5 questions</SelectItem>
                   <SelectItem value="10">10 questions</SelectItem>
-                  <SelectItem value="15">15 questions</SelectItem>
-                  <SelectItem value="20">20 questions</SelectItem>
+                  {/*<SelectItem value="15">15 questions</SelectItem>
+                  <SelectItem value="20">20 questions</SelectItem> */}
                 </SelectContent>
               </Select>
               <Label htmlFor="difficulties">Difficulty</Label>
