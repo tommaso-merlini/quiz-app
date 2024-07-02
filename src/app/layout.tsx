@@ -27,10 +27,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={GeistSans.className}>
-          <div className="border-b-[2px] border-neutral-100 p-4">
+          <div className="border-b-[1px] border-neutral-100 py-3 px-4">
             <div className="flex flex-row max-w-[1300px] justify-between mx-auto">
               <Link href="/subjects">
-                <span className="text-2xl font-bold">Quizzapp</span>
+                <span className="text-xl font-bold">Quizzapp</span>
               </Link>
               <SignedOut>
                 <div className="flex flex-row justify-between space-x-4">

@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
 
 export function UploadFiles({ subjectID }: { subjectID: number }) {
   const [files, setFiles] = React.useState<File[]>([]);
@@ -27,10 +28,23 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
   const [text, setText] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
+
+  const simulateProgress = () => {
+    setProgress(0);
+    return setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 90) {
+          return 90;
+        }
+        return prevProgress + Math.random() * 10;
+      });
+    }, 500);
+  };
 
   const handleUploadFiles = async () => {
     if (files.length === 0) {
-      throw new Error("shit");
+      throw new Error("No files selected");
     }
     const formData = new FormData();
     files.forEach((file) => {
@@ -38,30 +52,52 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
     });
     formData.append("subjectID", subjectID.toString());
     setIsLoading(true);
-    await dumpFiles(formData);
-    setFiles([]);
-    toast("Files uploaded successfully!", {
-      description: "You just uploaded some files, now go take a quiz!",
-    });
-    setOpen(false);
+    const progressInterval = simulateProgress();
+    try {
+      await dumpFiles(formData);
+      clearInterval(progressInterval);
+      setProgress(100);
+      setFiles([]);
+      toast("Files uploaded successfully!", {
+        description: "You just uploaded some files, now go take a quiz!",
+      });
+    } catch (error) {
+      toast.error("Upload failed. Please try again.");
+    } finally {
+      clearInterval(progressInterval);
+      setIsLoading(false);
+      setOpen(false);
+      setProgress(0);
+    }
   };
 
   const handleUploadText = async () => {
     if (name.trim() === "" || text.trim() === "") {
-      throw new Error("shit");
+      throw new Error("Name and text are required");
     }
     const formData = new FormData();
     formData.append("name", name);
     formData.append("text", text);
     formData.append("subjectID", subjectID.toString());
     setIsLoading(true);
-    await dumpText(formData);
-    setName("");
-    setName(text);
-    toast("Text uploaded successfully!", {
-      description: "You just uploaded a text, now go take a quiz!",
-    });
-    setOpen(false);
+    const progressInterval = simulateProgress();
+    try {
+      await dumpText(formData);
+      clearInterval(progressInterval);
+      setProgress(100);
+      setName("");
+      setText("");
+      toast("Text uploaded successfully!", {
+        description: "You just uploaded a text, now go take a quiz!",
+      });
+    } catch (error) {
+      toast.error("Upload failed. Please try again.");
+    } finally {
+      clearInterval(progressInterval);
+      setIsLoading(false);
+      setOpen(false);
+      setProgress(0);
+    }
   };
 
   return (
@@ -97,7 +133,12 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
               maxSize={100 * 1024 * 1024} //TODO: this is a max of 100 MB, what can i do
               onValueChange={setFiles}
             />
-            <DialogFooter className="pt-2">
+            <DialogFooter className="pt-2 flex flex-row space-x-4">
+              {isLoading && (
+                <div className="w-full mt-4">
+                  <Progress value={progress} className="w-full" />
+                </div>
+              )}
               <Button onClick={handleUploadFiles} disabled={isLoading}>
                 {!isLoading ? "Upload Files" : "Uploading..."}
               </Button>
@@ -120,7 +161,12 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
               onChange={(e) => setText(e.target.value)}
             />
             <input type="hidden" name="subjectID" value={subjectID} />
-            <DialogFooter className="pt-2">
+            <DialogFooter className="pt-2 flex flex-row space-x-4">
+              {isLoading && (
+                <div className="w-full mt-4">
+                  <Progress value={progress} className="w-full" />
+                </div>
+              )}
               <Button disabled={isLoading} onClick={handleUploadText}>
                 {!isLoading ? "Upload Text" : "Uploading..."}
               </Button>
