@@ -54,6 +54,7 @@
     "react-hook-form": "^7.52.0",
     "shadcn-ui": "^0.8.0",
     "sonner": "^1.5.0",
+    "svix": "^1.24.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tooltip": "^1.6.1",
