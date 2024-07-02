@@ -68,7 +68,7 @@ export default async function Grade({
           Score: {score}/{quiz.questions}
         </Badge>
       </div>
-      {answers.map((answer: any, index: number) => (
+      {answers.map((answer, index: number) => (
         <Card key={index} className={`space-y-4`}>
           <CardHeader>
             <CardTitle>{questions[index].topic}</CardTitle>
@@ -79,6 +79,11 @@ export default async function Grade({
           <CardContent>
             <p>{answer.userAnswer}</p>
             {!answer.isCorrect && (
+              <div className="bg-red-100 border-[2px] border-red-300 rounded p-4 mt-4">
+                {answer.correctAnswer}
+              </div>
+            )}
+            {answer.isCorrect && questions[index].type === "openEnded" && (
               <div className="bg-yellow-100 border-[2px] border-yellow-300 rounded p-4 mt-4">
                 {answer.correctAnswer}
               </div>

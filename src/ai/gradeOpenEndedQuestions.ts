@@ -9,7 +9,7 @@ import { OpenEndedType } from "@/types";
 export async function GradeOpenEndedQuestions(
   quizzes: (OpenEndedType & { userAnswer: any })[],
 ) {
-  // const model = anthropic("claude-3-5-sonnet-20240620") as any;
+  // const model = anthropic("claude-3-5-sonnet-20240620");
   const model = anthropic("claude-3-haiku-20240307");
   // const model = openai("gpt-3.5-turbo");
 
