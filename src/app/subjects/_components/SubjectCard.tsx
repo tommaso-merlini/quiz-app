@@ -139,33 +139,33 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                 d="M7.49609 3.75C7.49609 2.7835 8.2796 2 9.24609 2H14.7461C15.7126 2 16.4961 2.7835 16.4961 3.75C16.4961 4.7165 15.7126 5.5 14.7461 5.5H9.24609C8.2796 5.5 7.49609 4.7165 7.49609 3.75Z"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linejoin="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M6.5 10L10.5 10"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
               <path
                 d="M13.5 11C13.5 11 14 11 14.5 12C14.5 12 16.0882 9.5 17.5 9"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M6.5 16L10.5 16"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
               <path
                 d="M13.5 17C13.5 17 14 17 14.5 18C14.5 18 16.0882 15.5 17.5 15"
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             Take Quiz
@@ -214,33 +214,33 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                   d="M7.49609 3.75C7.49609 2.7835 8.2796 2 9.24609 2H14.7461C15.7126 2 16.4961 2.7835 16.4961 3.75C16.4961 4.7165 15.7126 5.5 14.7461 5.5H9.24609C8.2796 5.5 7.49609 4.7165 7.49609 3.75Z"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M6.5 10L10.5 10"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M13.5 11C13.5 11 14 11 14.5 12C14.5 12 16.0882 9.5 17.5 9"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M6.5 16L10.5 16"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M13.5 17C13.5 17 14 17 14.5 18C14.5 18 16.0882 15.5 17.5 15"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
               Take Quiz
@@ -283,33 +283,33 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                 d="M7.49609 3.75C7.49609 2.7835 8.2796 2 9.24609 2H14.7461C15.7126 2 16.4961 2.7835 16.4961 3.75C16.4961 4.7165 15.7126 5.5 14.7461 5.5H9.24609C8.2796 5.5 7.49609 4.7165 7.49609 3.75Z"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linejoin="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M6.5 10L10.5 10"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
               <path
                 d="M13.5 11C13.5 11 14 11 14.5 12C14.5 12 16.0882 9.5 17.5 9"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M6.5 16L10.5 16"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
+                strokeLinecap="round"
               />
               <path
                 d="M13.5 17C13.5 17 14 17 14.5 18C14.5 18 16.0882 15.5 17.5 15"
                 stroke="currentColor"
                 strokeWidth="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             Take Quiz
