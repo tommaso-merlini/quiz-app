@@ -15,19 +15,6 @@ export const trueOrFalseSchema = z.object({
   answer: z.enum(["true", "false"]).describe("be 100% precise"),
 });
 
-export const informativeTextSchema = z.object({
-  title: z.string().min(10).max(50).describe("text title"),
-  description: z.string().min(10).max(600).describe("text description"),
-  paragraphs: z.array(
-    z
-      .object({
-        title: z.string().min(10).max(50).describe("paragraph title"),
-        text: z.string().min(10).max(600).describe("paragraph text"),
-      })
-      .describe("paragraph object"),
-  ),
-});
-
 export const multipleChoiceSchema = z.object({
   type: z.enum(["multipleChoice"]),
   topic: z.string(),
@@ -43,53 +30,11 @@ export const multipleChoiceSchema = z.object({
     .length(4),
 });
 
-const columnSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Column name is required")
-    .max(50, "Column name must be less than 50 characters"),
-  type: z.enum(["string" /* , "number", "boolean" */]).describe("Column type"),
-});
-
-export const tableSchema = z
-  .object({
-    title: z
-      .string()
-      .min(1, "Title is required")
-      .max(100, "Title must be less than 100 characters"),
-    description: z
-      .string()
-      .min(1, "Description is required")
-      .max(500, "Description must be less than 500 characters"),
-    columnsTitles: z
-      .array(columnSchema)
-      .min(1, "At least one column is required")
-      .max(6, "No more than 6 columns"),
-    rows: z.array(z.record(z.string())).max(5, "No more than 5 rows"),
-  })
-  .refine(
-    (data) => {
-      return data.rows.every(
-        (row) => Object.keys(row).length === data.columnsTitles.length,
-      );
-    },
-    {
-      message:
-        "Each row must have the same number of values as there are columns",
-      path: ["rows"],
-    },
-  );
-
 export const openEndedSchema = z.object({
   type: z.enum(["openEnded"]),
   topic: z.string().describe("the topic of the question"),
   question: z.string().describe("the title of the question"),
   answer: z.string().describe("the answer of the question"),
-  // maxLength: z
-  //   .number()
-  //   .describe(
-  //     "Maximum number of characters allowed in the textarea to answer the question",
-  //   ),
 });
 
 export const fillBlanksSchema = z.object({

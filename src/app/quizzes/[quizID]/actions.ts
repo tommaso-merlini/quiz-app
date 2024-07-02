@@ -1,14 +1,14 @@
 "use server";
 
-import { GradeOpenEndedQuestion } from "@/ai/gradeOpenEndedQuestion";
 import { db } from "@/db";
 import { getQuizById } from "@/db/queries";
-import { grades, InsertGrade, quizzes } from "@/db/schema";
+import { grades as gradesTable, InsertGrade, quizzes } from "@/db/schema";
 import { quizSchema } from "./schema";
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { Answer } from "@/types";
+import { Answer, OpenEndedType } from "@/types";
 import { and, eq, lt, sql } from "drizzle-orm";
+import { GradeOpenEndedQuestions } from "@/ai/gradeOpenEndedQuestions";
 
 type QuizType = z.infer<typeof quizSchema>["questionTypes"][number];
 
@@ -19,6 +19,17 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
     answers: [],
   };
   const questions: QuizType[] = quiz.content as QuizType[];
+  const r: (OpenEndedType & { userAnswer: any })[] = [];
+  questions.map((q, i) => {
+    if (q.type === "openEnded") {
+      r.push({
+        ...q,
+        userAnswer: userAnswers[i],
+      });
+    }
+  });
+  const { grades } = await GradeOpenEndedQuestions(r);
+  let gradesIndex = 0;
 
   const correctionPromises = questions.map(async (question, index) => {
     let userAnswer = userAnswers[index];
@@ -34,13 +45,12 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
 
     switch (question.type) {
       case "openEnded":
-        const resp = await GradeOpenEndedQuestion(userAnswer, question.answer);
-        console.log("grade: ", resp);
         answer = {
-          isCorrect: resp.grade >= 60,
+          isCorrect: grades[gradesIndex].grade >= 60,
           userAnswer: userAnswer,
-          correctAnswer: resp.correction,
+          correctAnswer: grades[gradesIndex].correction,
         };
+        gradesIndex++;
         break;
       case "trueOrFalse":
         answer = {
@@ -79,7 +89,7 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
   // Add sorted corrections to the grade object
   grade.answers = corrections.map((c) => c.answer);
 
-  const resp = await db.insert(grades).values(grade).returning();
+  const resp = await db.insert(gradesTable).values(grade).returning();
   redirect(`/grades/${resp[0].id}`);
 }
 

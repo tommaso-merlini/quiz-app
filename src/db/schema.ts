@@ -39,7 +39,7 @@ export const quizzes = pgTable("quizzes", {
   id: serial("id").primaryKey(),
   subjectID: integer("subjectID")
     .notNull()
-    .references(() => subjects.id, { onDelete: "cascade" }),
+    .references(() => subjects.id, { onDelete: "cascade" }), //TODO: really deleting a subject should delete even its quizzes? i think not
   content: json("content").notNull(),
   language: text("language", {
     enum: languages,

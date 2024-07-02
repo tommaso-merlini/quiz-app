@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { quizSchema } from "./app/quizzes/[quizID]/schema";
+import { openEndedSchema, quizSchema } from "./app/quizzes/[quizID]/schema";
 import { SelectMaterial, SelectSubject } from "./db/schema";
 
 export type QuizType = z.infer<typeof quizSchema>;
@@ -15,3 +15,4 @@ export type SubjectWithMaterials = SelectSubject & {
   materials: SelectMaterial[];
   quizCount: number;
 };
+export type OpenEndedType = z.infer<typeof openEndedSchema>;
