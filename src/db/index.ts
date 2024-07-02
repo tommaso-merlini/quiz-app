@@ -4,8 +4,10 @@
 // export const db = drizzle(sql);
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-const connectionString =
-  "postgres://postgres:g.CA2lnVXMiAlGmwygcps6laRPi0kBJq@monorail.proxy.rlwy.net:38121/railway";
+const connectionString = process.env.POSTGRES_URL;
+if (!connectionString) {
+  throw new Error("POSTGRES URL NOT FOUND IN ENV FILE");
+}
 
 const pool = postgres(connectionString, {
   max: 10, // set the maximum number of connections in the pool

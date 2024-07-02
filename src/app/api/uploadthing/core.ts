@@ -31,7 +31,7 @@ export const ourFileRouter = {
       return { uploadedBy: metadata.userId };
     }),
   pdfUploader: f({
-    pdf: { maxFileSize: "32MB" },
+    pdf: { maxFileSize: "128MB" },
   })
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
