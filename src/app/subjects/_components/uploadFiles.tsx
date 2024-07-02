@@ -78,7 +78,6 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
           </DialogDescription>
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
             <AlertDescription>
               You cannot upload Images (this is not an error just for you). We
               are currently researching for the best way to handle images, for

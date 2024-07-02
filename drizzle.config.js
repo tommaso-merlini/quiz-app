@@ -6,6 +6,7 @@ export default defineConfig({
   out: "./migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.POSTGRES_URL,
+    // url: process.env.POSTGRES_URL,
+    url: "postgres://postgres:g.CA2lnVXMiAlGmwygcps6laRPi0kBJq@monorail.proxy.rlwy.net:38121/railway",
   },
 });

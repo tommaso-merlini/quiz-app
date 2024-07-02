@@ -18,6 +18,13 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { GetGrade } from "../actions";
 import { QuizContent } from "@/types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface DynamicFormProps {
   questions: QuizContent;
@@ -61,7 +68,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   async function onSubmit(values: { answers: any[] }) {
     setIsSubmitting(true);
-    const resp = await GetGrade(values.answers, quizID, subjectID);
+    const resp = await GetGrade(values.answers, quizID);
     console.log(resp);
   }
 
@@ -193,15 +200,23 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {questions.map((question, index) => (
-              <div key={index} className="space-y-4 border p-4 rounded">
-                <h3 className="text-lg font-semibold">{question.topic}</h3>
-                <p className="text-md">{question.question}</p>
-                {renderQuestionField(question, index)}
-              </div>
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle>{question.topic}</CardTitle>
+                  <CardDescription className="text-md">
+                    {question.question}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {renderQuestionField(question, index)}
+                </CardContent>
+              </Card>
             ))}
-            <Button size="lg" type="submit" disabled={isSubmitting}>
-              {!isSubmitting ? "Submit Quiz" : "Grading your Quiz..."}
-            </Button>
+            <div className="flex flex-row justify-end">
+              <Button size="lg" type="submit" disabled={isSubmitting}>
+                {!isSubmitting ? "Submit Quiz" : "Grading your Quiz..."}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>

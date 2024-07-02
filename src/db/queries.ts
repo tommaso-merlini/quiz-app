@@ -1,8 +1,8 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from ".";
-import { materials, quizzes, subjects, users } from "./schema";
+import { grades, materials, quizzes, subjects, users } from "./schema";
 
 export async function getUserByAuthID(authID: string) {
   return (
@@ -26,4 +26,30 @@ export async function getMaterialById(id: number) {
   return (
     await db.select().from(materials).where(eq(materials.id, id)).limit(1)
   )[0];
+}
+
+export async function getUserGrades(userID: number) {
+  return await db
+    .select({
+      grade: grades,
+      quiz: {
+        id: quizzes.id,
+        content: quizzes.content,
+        language: quizzes.language,
+        difficulty: quizzes.difficulty,
+        time: quizzes.time,
+        topic: quizzes.topic,
+        questions: quizzes.questions,
+      },
+      subject: {
+        id: subjects.id,
+        name: subjects.name,
+      },
+    })
+    .from(grades)
+    .innerJoin(quizzes, eq(grades.quizID, quizzes.id))
+    .innerJoin(subjects, eq(quizzes.subjectID, subjects.id))
+    .innerJoin(users, eq(subjects.userID, users.id))
+    .where(eq(users.id, userID))
+    .orderBy(desc(grades.createdAt));
 }

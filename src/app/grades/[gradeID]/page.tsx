@@ -1,27 +1,29 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { db } from "@/db";
 import { getQuizById } from "@/db/queries";
 import { grades } from "@/db/schema";
-import { QuizContent } from "@/types";
+import { Answer, QuizContent } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export default async function Quiz({
+export default async function Grade({
   params,
 }: {
-  params: { subjectID: number; quizID: number; gradeID: number };
+  params: { gradeID: number };
 }) {
   const userAuth = auth();
   if (!userAuth.userId) {
     redirect("/login");
-  }
-  const quiz = await getQuizById(params.quizID);
-  const questions = quiz.content as QuizContent;
-  if (!quiz) {
-    throw new Error("shit");
   }
   const grade = (
     await db.select().from(grades).where(eq(grades.id, params.gradeID)).limit(1)
@@ -29,6 +31,9 @@ export default async function Quiz({
   if (!grade) {
     throw new Error("shit");
   }
+  const quiz = await getQuizById(grade.quizID);
+  const questions = quiz.content as QuizContent;
+  const answers = grade.answers as Answer[];
 
   const getDifficultyColor = (difficulty: "easy" | "medium" | "hard") => {
     switch (difficulty) {
@@ -44,7 +49,7 @@ export default async function Quiz({
   };
 
   let score = 0;
-  grade.answers.map((c: any) => {
+  answers.map((c: any) => {
     if (c.isCorrect) {
       score++;
     }
@@ -63,30 +68,33 @@ export default async function Quiz({
           Score: {score}/{quiz.questions}
         </Badge>
       </div>
-      {grade.answers.map((answer: any, index: number) => (
-        <div
-          key={index}
-          className={`space-y-4 border-4 p-4 rounded ${
-            answer.isCorrect
-              ? "bg-green-50 border-green-500"
-              : "bg-red-50 border-red-500"
-          }`}
-        >
-          <h3 className="text-lg font-semibold">{questions[index].topic}</h3>
-          <p className="text-md">{questions[index].question}</p>
-          <div>
-            <p>
-              <strong>Your Answer:</strong> {answer.userAnswer}
-            </p>
-            <p>
-              <strong>Correct Answer:</strong> {answer.correctAnswer}
-            </p>
-          </div>
-        </div>
+      {answers.map((answer: any, index: number) => (
+        <Card key={index} className={`space-y-4`}>
+          <CardHeader>
+            <CardTitle>{questions[index].topic}</CardTitle>
+            <CardDescription className="text-md">
+              {questions[index].question}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>{answer.userAnswer}</p>
+            {!answer.isCorrect && (
+              <div className="bg-yellow-100 border-[2px] border-yellow-300 rounded p-4 mt-4">
+                {answer.correctAnswer}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       ))}
-      <Link href={`/subjects/${params.subjectID}`}>
-        <Button>Return to subject</Button>
-      </Link>
+      <br />
+      <div className="flex flex-row justify-end space-x-4">
+        <Link href={`/subjects`}>
+          <Button variant="outline">Return to subject</Button>
+        </Link>
+        <Link href={`/grades`}>
+          <Button>Return to grades</Button>
+        </Link>
+      </div>
     </div>
   );
 }

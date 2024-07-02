@@ -3,19 +3,16 @@
 import { GradeOpenEndedQuestion } from "@/ai/gradeOpenEndedQuestion";
 import { db } from "@/db";
 import { getQuizById } from "@/db/queries";
-import { grades, InsertGrade } from "@/db/schema";
+import { grades, InsertGrade, quizzes } from "@/db/schema";
 import { quizSchema } from "./schema";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { Answer } from "@/types";
+import { and, eq, lt, sql } from "drizzle-orm";
 
 type QuizType = z.infer<typeof quizSchema>["questionTypes"][number];
 
-export async function GetGrade(
-  userAnswers: any[],
-  quizID: number,
-  subjectID: number,
-) {
+export async function GetGrade(userAnswers: any[], quizID: number) {
   const quiz = await getQuizById(quizID);
   const grade: InsertGrade = {
     quizID,
@@ -82,6 +79,26 @@ export async function GetGrade(
   // Add sorted corrections to the grade object
   grade.answers = corrections.map((c) => c.answer);
 
-  await db.insert(grades).values(grade).returning();
-  redirect(`/quiz/${quizID}/grades`);
+  const resp = await db.insert(grades).values(grade).returning();
+  redirect(`/grades/${resp[0].id}`);
+}
+
+export async function isRunningQuiz(quizId: number): Promise<boolean> {
+  const runningQuiz = await db
+    .select({
+      id: quizzes.id,
+    })
+    .from(quizzes)
+    .where(
+      and(
+        eq(quizzes.id, quizId),
+        lt(
+          sql`CURRENT_TIMESTAMP`,
+          sql`${quizzes.createdAt} + (${quizzes.time} || ' minutes')::interval`,
+        ),
+      ),
+    )
+    .limit(1);
+
+  return runningQuiz.length > 0;
 }

@@ -74,5 +74,5 @@ export async function createQuiz(fd: FormData) {
     throw new Error("shit");
   }
 
-  redirect(`/quiz/${q.id}`);
+  redirect(`/quizzes/${q.id}`);
 }

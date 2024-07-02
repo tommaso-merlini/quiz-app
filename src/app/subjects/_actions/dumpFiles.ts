@@ -37,7 +37,10 @@ export async function dumpFiles(formData: FormData) {
       }
       i++;
     }
-    await db.insert(embeddings).values(allFilesEmbeddings);
-  });
+    const res = await tx
+      .insert(embeddings)
+      .values(allFilesEmbeddings)
+      .returning();
+  }); //TODO: se transaction fail allora elimare tutte le immagini appena create da uploadThing
   revalidatePath(`/subjects/${subjectID}`);
 }

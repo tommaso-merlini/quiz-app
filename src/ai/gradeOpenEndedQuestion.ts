@@ -11,7 +11,7 @@ export async function GradeOpenEndedQuestion(
 ) {
   // const model = anthropic("claude-3-5-sonnet-20240620");
   // const model = anthropic("claude-3-haiku-20240307");
-  const model = openai("gpt-4o");
+  const model = openai("gpt-3.5-turbo");
 
   const { object } = await generateObject({
     model,

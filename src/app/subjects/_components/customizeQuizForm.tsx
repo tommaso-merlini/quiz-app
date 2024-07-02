@@ -20,9 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import languages from "@/utils/languages";
-import { SubjectWithMaterials } from "../page";
 import { createQuiz } from "../_actions/createQuiz";
 import { useState } from "react";
+import { SubjectWithMaterials } from "@/types";
 
 export function CustomizeQuizForm({
   children,

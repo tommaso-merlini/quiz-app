@@ -1,6 +1,6 @@
 "use server";
 
-import { quizSchema } from "@/app/quiz/[quizID]/schema";
+import { quizSchema } from "@/app/quizzes/[quizID]/schema";
 import { openai } from "@ai-sdk/openai";
 import { UserContent, generateObject } from "ai";
 
@@ -15,7 +15,7 @@ export async function GenerateQuiz(content: UserContent, options: Options) {
   // const model = anthropic("claude-3-5-sonnet-20240620");
   // const model = chromeai("text");
   // const model = anthropic("claude-3-haiku-20240307");
-  const model = openai("gpt-4o");
+  const model = openai("gpt-3.5-turbo");
 
   const { object } = await generateObject({
     model,
