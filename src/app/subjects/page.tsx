@@ -4,6 +4,8 @@ import { getUserSubjectsWithMaterialsAndQuizCount } from "./_actions/getSubjects
 import { getUserByAuthID } from "@/db/queries";
 import { CreateSubjectButton } from "./_components/CreateSubjectButton";
 import { SubjectCard } from "./_components/SubjectCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 export default async function Subjects() {
   const userAuth = auth();
@@ -32,6 +34,10 @@ export default async function Subjects() {
           <SubjectCard subject={subject} key={subject.id} />
         ))}
       </div>
+
+      {subjects.length === 0 && (
+        <h1 className="text-center mt-40">No Subject Found</h1>
+      )}
     </div>
   );
 }

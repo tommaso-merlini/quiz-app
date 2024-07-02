@@ -98,7 +98,10 @@ export function FileUploader(props: FileUploaderProps) {
     onValueChange,
     onUpload,
     progresses,
-    accept = { "image/*": [], "application/pdf": [] },
+    accept = {
+      // "image/*": [], //TODO: handle images
+      "application/pdf": [],
+    },
     maxSize = 1024 * 1024 * 2,
     maxFiles = 1,
     multiple = false,

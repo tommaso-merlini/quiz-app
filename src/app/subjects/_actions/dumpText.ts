@@ -29,7 +29,7 @@ export async function dumpText(formData: FormData) {
     console.log("material:", m);
     const textEmbeddings = await processText(text, m[0].id);
     allFilesEmbeddings.push(...textEmbeddings);
-    await db.insert(embeddings).values(allFilesEmbeddings);
+    await tx.insert(embeddings).values(allFilesEmbeddings);
   });
 
   revalidatePath(`/subjects/${subjectID}`);

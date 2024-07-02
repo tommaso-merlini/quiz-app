@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { dumpFiles } from "../_actions/dumpFiles";
 import { dumpText } from "../_actions/dumpText";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,6 +26,7 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
   const [name, setName] = React.useState<string>("");
   const [text, setText] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleUploadFiles = async () => {
     if (files.length === 0) {
@@ -42,7 +43,7 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
     toast("Files uploaded successfully!", {
       description: "You just uploaded some files, now go take a quiz!",
     });
-    setIsLoading(false);
+    setOpen(false);
   };
 
   const handleUploadText = async () => {
@@ -60,11 +61,11 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
     toast("Text uploaded successfully!", {
       description: "You just uploaded a text, now go take a quiz!",
     });
-    setIsLoading(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex-1">
           Dump Material

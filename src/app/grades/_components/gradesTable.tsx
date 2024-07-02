@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
