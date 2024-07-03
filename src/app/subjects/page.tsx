@@ -4,8 +4,6 @@ import { getUserSubjectsWithMaterialsAndQuizCount } from "./_actions/getSubjects
 import { getUserByAuthID } from "@/db/queries";
 import { CreateSubjectButton } from "./_components/CreateSubjectButton";
 import { SubjectCard } from "./_components/SubjectCard";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
 
 export default async function Subjects() {
   const userAuth = auth();
@@ -21,9 +19,9 @@ export default async function Subjects() {
   const subjects = await getUserSubjectsWithMaterialsAndQuizCount(user.id);
 
   return (
-    <div>
+    <div className="sm:pt-14 pt-0">
       <div className="flex flex-row justify-between">
-        <h1 className="text-3xl font-bold mb-6 flex items-center">
+        <h1 className="text-3xl font-semibold mb-6 flex items-center underline decoration-yellow-300 decoration-4 decoration-solid">
           My Subjects
         </h1>
 
