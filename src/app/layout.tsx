@@ -29,7 +29,10 @@ export default function RootLayout({
         <body className={GeistSans.className}>
           <div className="border-b-[1px] border-neutral-100 py-3 px-4">
             <div className="flex flex-row max-w-[1300px] justify-between mx-auto">
-              <Link href="/subjects">
+              <Link
+                href="/subjects"
+                className="flex items-center justify-center"
+              >
                 <span className="text-xl font-bold">Quizzapp</span>
               </Link>
               <SignedOut>
@@ -49,7 +52,7 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </div>
-          <div className="max-w-[1300px] mx-auto pt-8 px-4 lg:px-0">
+          <div className="max-w-[1300px] mx-auto py-8 px-4 lg:px-0">
             {children}
           </div>
           <Toaster />

@@ -9,8 +9,8 @@ import { OpenEndedType } from "@/types";
 export async function GradeOpenEndedQuestions(
   quizzes: (OpenEndedType & { userAnswer: any })[],
 ) {
-  // const model = anthropic("claude-3-5-sonnet-20240620");
-  const model = anthropic("claude-3-haiku-20240307");
+  const model = anthropic("claude-3-5-sonnet-20240620");
+  // const model = anthropic("claude-3-haiku-20240307");
   // const model = openai("gpt-3.5-turbo");
 
   const messages: CoreMessage[] = [];
@@ -21,11 +21,11 @@ export async function GradeOpenEndedQuestions(
       content: [
         {
           type: "text",
-          text: `this is the user answer: ${q.userAnswer === null || q.userAnswer === undefined || q.userAnswer.trim() === "" ? "I don't know" : q.userAnswer} for question ${i + 1}`,
+          text: `this is the user answer for question ${i + 1}: ${q.userAnswer === null || q.userAnswer === undefined || q.userAnswer.trim() === "" ? "No answer provided" : q.userAnswer}`,
         },
         {
           type: "text",
-          text: `this is the correct answer: ${q.answer} for question ${i}`,
+          text: `this is the correct answer (DO NOT GRADE THIS ANSWER, YOU MUST GRADE THE USER ANSWER BASED ON THIS ANSWER) for question ${i}: ${q.answer}`,
         },
       ],
     });

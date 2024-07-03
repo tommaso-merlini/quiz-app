@@ -19,8 +19,8 @@ export default async function getSimilarSubjectEmbeddings(
       .innerJoin(subjects, eq(materials.subjectID, subjects.id))
       .where(eq(subjects.id, subjectID))
       .orderBy(sql`RANDOM()`)
+      // .orderBy(sql`RANDOM() * ${sql.raw(Math.random().toString())}`)
       .limit(10);
-    // .orderBy(sql`RANDOM() * ${sql.raw(Math.random().toString())}`);
 
     console.log("random rows", randomRows);
     return randomRows;

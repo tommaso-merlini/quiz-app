@@ -253,7 +253,7 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
               </AlertDialogTitle>
               <AlertDialogDescription>
                 You are trying to start a quiz without any material. Please Dump
-                some material before creating a quiz
+                some notes before creating a quiz
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

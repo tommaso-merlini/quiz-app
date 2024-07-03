@@ -111,7 +111,7 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
         <DialogHeader>
           <DialogTitle>Dump Material</DialogTitle>
           <DialogDescription>
-            Dump all the material you got: text, images, pdfs
+            Dump all the Material you got: text, images, pdfs
           </DialogDescription>
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />

@@ -13,14 +13,14 @@ export default async function Home() {
     <>
       <section className="mx-auto flex max-w-[980px] flex-col items-center gap-4 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20">
         <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
-          Generate quizzes for free
+          Ace Your Exams, Infinite Quizzes Your Notes.
         </h1>
         <span
           className="max-w-[600px] text-center text-lg font-light text-foreground"
           // className="display: inline-block; vertical-align: top; text-decoration: inherit; max-width: 502px;"
         >
-          Beautifully designed components that you can copy and paste into your
-          apps. Accessible. Customizable. Open Source.
+          Turn your notes into quizzes that actually prep you for exams. Upload
+          once, practice infinitely.
         </span>
         <SignUpButton>
           <Button>Check it out</Button>
