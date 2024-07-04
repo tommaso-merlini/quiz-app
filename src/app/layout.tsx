@@ -52,9 +52,7 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </div>
-          <div className="max-w-[1300px] mx-auto py-8 px-4 lg:px-0">
-            {children}
-          </div>
+          <div className="max-w-[1300px] mx-auto py-8 px-4">{children}</div>
           <Toaster />
         </body>
       </html>
