@@ -1,5 +1,6 @@
 import languages from "@/utils/languages";
 import {
+  boolean,
   index,
   integer,
   json,
@@ -7,7 +8,6 @@ import {
   serial,
   text,
   timestamp,
-  varchar,
   vector,
 } from "drizzle-orm/pg-core";
 
@@ -84,6 +84,15 @@ export const materials = pgTable("materials", {
     .$onUpdate(() => new Date()),
 });
 
+export const goals = pgTable("goals", {
+  id: serial("id").primaryKey(),
+  userID: integer("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  betterGrades: boolean("betterGrades"),
+  moreTimeStudying: boolean("moreTimeStudying"),
+});
+
 export const embeddings = pgTable(
   "embeddings",
   {
@@ -123,3 +132,6 @@ export type SelectEmbedding = typeof embeddings.$inferSelect;
 
 export type InsertGrade = typeof grades.$inferInsert;
 export type SelectGrade = typeof grades.$inferSelect;
+
+export type InsertGoal = typeof goals.$inferInsert;
+export type SelectGoal = typeof goals.$inferSelect;

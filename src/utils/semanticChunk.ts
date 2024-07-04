@@ -20,31 +20,36 @@ async function extractTextFromPDF(buffer: Uint8Array): Promise<string> {
   return fullText;
 }
 
-function semanticChunking(
-  text: string,
-  minChunkSize: number = 100,
-  maxChunkSize: number = 500,
-): string[] {
-  // Regex migliorata per gestire meglio le parentesi e altri casi speciali
+function semanticChunking(text: string, maxWords: number = 100): string[] {
   const sentenceRegex =
     /[^.!?]+(?:[.!?]+(?=\s+[A-Z]|\s*$)|\([^)]*\)|\[[^\]]*\]|(?=\s*$))/g;
   const sentences = text.match(sentenceRegex) || [];
   const chunks: string[] = [];
-  let currentChunk = "";
+  let currentChunk: string[] = [];
+  let currentWordCount = 0;
 
   for (const sentence of sentences) {
-    if (currentChunk.length + sentence.length <= maxChunkSize) {
-      currentChunk += sentence + " ";
-    } else {
-      if (currentChunk.length >= minChunkSize) {
-        chunks.push(currentChunk.trim());
+    const words = sentence.trim().split(/\s+/);
+
+    for (const word of words) {
+      if (currentWordCount >= maxWords) {
+        chunks.push(currentChunk.join(" ").trim());
+        currentChunk = [];
+        currentWordCount = 0;
       }
-      currentChunk = sentence + " ";
+
+      currentChunk.push(word);
+      currentWordCount++;
+    }
+
+    // Add a space after each sentence, unless it's the last one
+    if (sentence !== sentences[sentences.length - 1]) {
+      currentChunk.push(" ");
     }
   }
 
-  if (currentChunk.length >= minChunkSize) {
-    chunks.push(currentChunk.trim());
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk.join(" ").trim());
   }
 
   return chunks;

@@ -8,6 +8,7 @@ import { OpenEndedType } from "@/types";
 
 export async function GradeOpenEndedQuestions(
   quizzes: (OpenEndedType & { userAnswer: any })[],
+  language: string,
 ) {
   const model = anthropic("claude-3-5-sonnet-20240620");
   // const model = anthropic("claude-3-haiku-20240307");
@@ -38,6 +39,7 @@ export async function GradeOpenEndedQuestions(
         You have to determine if the user's answers are correct based on the correct answer.
         This is highschool level.
         Do not yap.
+        LANGUAGE: ${language}
         `,
     schema: z.object({
       grades: z
@@ -46,7 +48,7 @@ export async function GradeOpenEndedQuestions(
             grade: z.number().min(0).max(100),
             correction: z.string().describe(
               // "some correction or tips to give to the student. explain what did the student get wrong. Respond in the student's language",
-              "explain what did the student got wrong and correct them. Respond in the student's language. Do not yap. Express yourself with the least amount of tokens. DO NOT say stuff like: 'The correct answer for question 3 is...'",
+              "explain what did the student got wrong and correct them. Do not yap. Express yourself with the least amount of tokens. DO NOT say stuff like: 'The correct answer for question 3 is...'",
             ),
           }),
         )

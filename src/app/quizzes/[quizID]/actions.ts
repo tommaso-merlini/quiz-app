@@ -28,7 +28,7 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
       });
     }
   });
-  const { grades } = await GradeOpenEndedQuestions(r);
+  const { grades } = await GradeOpenEndedQuestions(r, quiz.language);
   let gradesIndex = 0;
 
   const correctionPromises = questions.map(async (question, index) => {

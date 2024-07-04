@@ -2,7 +2,7 @@
 
 import { desc, eq } from "drizzle-orm";
 import { db } from ".";
-import { grades, materials, quizzes, subjects, users } from "./schema";
+import { goals, grades, materials, quizzes, subjects, users } from "./schema";
 
 export async function getUserByAuthID(authID: string) {
   return (
@@ -13,6 +13,12 @@ export async function getUserByAuthID(authID: string) {
 export async function getSubjectByID(id: number) {
   return (
     await db.select().from(subjects).where(eq(subjects.id, id)).limit(1)
+  )[0];
+}
+
+export async function getUserGoals(userID: number) {
+  return (
+    await db.select().from(goals).where(eq(goals.userID, userID)).limit(1)
   )[0];
 }
 
