@@ -6,7 +6,7 @@ import GradesTable from "./_components/gradesTable";
 export default async function Grades() {
   const userAuth = auth();
   if (!userAuth.userId) {
-    redirect("/login");
+    redirect("/");
   }
   const user = await getUserByAuthID(userAuth.userId);
   const grades = await getUserGrades(user.id);

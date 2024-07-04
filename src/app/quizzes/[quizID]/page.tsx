@@ -7,7 +7,7 @@ import { isRunningQuiz } from "./actions";
 export default async function Quiz({ params }: { params: { quizID: number } }) {
   const userAuth = auth();
   if (!userAuth.userId) {
-    redirect("/login");
+    redirect("/");
   }
   const isRunning = await isRunningQuiz(params.quizID);
   if (!isRunning) {

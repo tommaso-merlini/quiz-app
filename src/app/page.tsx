@@ -24,7 +24,7 @@ export default async function Home() {
           once, practice infinitely.
         </span>
         <SignUpButton>
-          <Button>Check it out</Button>
+          <Button>Check it out, it&apos;s Free</Button>
         </SignUpButton>
       </section>
       <div className="w-full bg-neutral-50 mt-4 rounded-xl mb-10 relative">

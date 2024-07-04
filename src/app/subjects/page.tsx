@@ -9,7 +9,7 @@ import UserIntroductionCard from "./_components/UserIntroductionCard";
 export default async function Subjects() {
   const userAuth = auth();
   if (!userAuth.userId) {
-    redirect("/login");
+    redirect("/");
   }
 
   const user = await getUserByAuthID(userAuth.userId);

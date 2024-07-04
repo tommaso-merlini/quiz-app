@@ -23,7 +23,7 @@ export default async function Grade({
 }) {
   const userAuth = auth();
   if (!userAuth.userId) {
-    redirect("/login");
+    redirect("/");
   }
   const grade = (
     await db.select().from(grades).where(eq(grades.id, params.gradeID)).limit(1)
