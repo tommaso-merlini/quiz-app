@@ -1,10 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getUserSubjectsWithMaterialsAndQuizCount } from "./_actions/getSubjectsDeep";
-import { getUserByAuthID, getUserGoals } from "@/db/queries";
+import { getUserByAuthID, getUserGoals, getUserGrades } from "@/db/queries";
 import { CreateSubjectButton } from "./_components/CreateSubjectButton";
 import { SubjectCard } from "./_components/SubjectCard";
 import UserIntroductionCard from "./_components/UserIntroductionCard";
+import Chart from "./_components/Chart";
+import { UserGrades } from "../grades/_components/gradesTable";
+import { Chart2 } from "./_components/Chart2";
 
 export default async function Subjects() {
   const userAuth = auth();
@@ -20,6 +23,7 @@ export default async function Subjects() {
   const goals = await getUserGoals(user.id);
 
   const subjects = await getUserSubjectsWithMaterialsAndQuizCount(user.id);
+  const grades: UserGrades = await getUserGrades(user.id);
 
   return (
     <div className="sm:pt-14 pt-0">
@@ -41,6 +45,9 @@ export default async function Subjects() {
           {subjects.length === 0 && (
             <h1 className="text-center mt-40">No Subject Found</h1>
           )}
+          <div className="mt-10">
+            <Chart grades={grades} />
+          </div>
         </>
       }
       {/*!goals && (

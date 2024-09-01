@@ -16,10 +16,10 @@ type Options = {
 };
 
 export async function GenerateQuiz(content: UserContent, options: Options) {
-  const model = anthropic("claude-3-5-sonnet-20240620");
+  // const model = anthropic("claude-3-5-sonnet-20240620");
   // const model = chromeai("text");
   // const model = anthropic("claude-3-haiku-20240307");
-  // const model = openai("gpt-4o");
+  const model = openai("gpt-4o-mini");
 
   const { object } = await generateObject({
     model,
