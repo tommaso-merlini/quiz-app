@@ -35,6 +35,9 @@ export async function dumpFiles(formData: FormData) {
     method: "POST",
     body: newForm,
   });
+  console.log("===============");
+  console.log(response);
+  console.log("===============");
 
   const json = (await response.json()) as Response;
 
