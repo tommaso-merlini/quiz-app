@@ -1,3 +1,4 @@
+import { auth } from "@/components/lucia/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,10 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/db";
-import { getQuizById } from "@/db/queries";
-import { grades } from "@/db/schema";
-import { Answer, QuizContent } from "@/types";
-import { auth } from "@clerk/nextjs/server";
+import { getTestByID } from "@/db/queries";
+import { gradesTable } from "@/db/schema";
+import { Answer } from "@/types";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -19,29 +19,37 @@ import { redirect } from "next/navigation";
 export default async function Grade({
   params,
 }: {
-  params: { gradeID: number };
+  params: { gradeID: string };
 }) {
-  const userAuth = auth();
-  if (!userAuth.userId) {
+  const { user } = await auth();
+  if (!user) {
     redirect("/");
   }
   const grade = (
-    await db.select().from(grades).where(eq(grades.id, params.gradeID)).limit(1)
+    await db
+      .select()
+      .from(gradesTable)
+      .where(eq(gradesTable.id, params.gradeID))
+      .limit(1)
   )[0];
   if (!grade) {
     throw new Error("shit");
   }
-  const quiz = await getQuizById(grade.quizID);
-  const questions = quiz.content as QuizContent;
+  const test = await getTestByID(grade.testID);
+  const questions = test.questions;
   const answers = grade.answers as Answer[];
 
-  const getDifficultyColor = (difficulty: "easy" | "medium" | "hard") => {
+  const getDifficultyColor = (
+    difficulty: "easy" | "medium" | "hard" | "impossible",
+  ) => {
     switch (difficulty) {
       case "easy":
         return "bg-green-500";
       case "medium":
         return "bg-yellow-500";
       case "hard":
+        return "bg-red-500";
+      case "impossible":
         return "bg-red-500";
       default:
         return "bg-gray-500";
@@ -59,13 +67,13 @@ export default async function Grade({
     <div className="space-y-4 max-w-3xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <div className="space-x-2">
-          <Badge className={getDifficultyColor(quiz.difficulty)}>
-            {quiz.difficulty} difficulty
+          <Badge className={getDifficultyColor(test.difficulty)}>
+            {test.difficulty} difficulty
           </Badge>
-          {quiz.topic && <Badge variant="outline">{quiz.topic}</Badge>}
+          {test.topic && <Badge variant="outline">{test.topic}</Badge>}
         </div>
         <Badge variant="secondary" className="text-lg">
-          Score: {score}/{quiz.questions}
+          Score: {score}/{test.questionsQty}
         </Badge>
       </div>
       {answers.map((answer, index: number) => (

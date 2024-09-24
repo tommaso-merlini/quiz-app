@@ -57,14 +57,14 @@ export default function GradesTable({ grades }: { grades: UserGrades }) {
               <TableCell className="font-semibold">
                 {grade.subject.name}
               </TableCell>
-              <TableCell>{grade.quiz.topic}</TableCell>
+              <TableCell>{grade.test.topic}</TableCell>
               <TableCell>
                 {getScore(grade.grade.answers as Answer[])}/
-                {grade.quiz.questions}
+                {grade.test.questionsQty}
               </TableCell>
-              <TableCell>{grade.quiz.questions} questions</TableCell>
-              <TableCell>{grade.quiz.time} time</TableCell>
-              <TableCell>{grade.quiz.difficulty}</TableCell>
+              <TableCell>{grade.test.questionsQty} questions</TableCell>
+              <TableCell>{grade.test.timeInMinutes} time</TableCell>
+              <TableCell>{grade.test.difficulty}</TableCell>
               <TableCell className="text-right">
                 {formatDate(grade.grade.createdAt)}
               </TableCell>

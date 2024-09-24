@@ -1,46 +1,51 @@
-"use server";
-
-import { embeddings, materials, subjects } from "@/db/schema";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { EmbedMany } from "./embedMany";
+import { embeddingsTable, materialsTable, subjectsTable } from "@/db/schema";
+import { embed } from "./embedText";
 
-export default async function getSimilarSubjectEmbeddings(
-  prompt: string,
-  subjectID: number,
+export default async function retrieveEmbeddings(
+  prompt: string | undefined,
+  subjectID: string,
 ) {
-  if (prompt === null || prompt === undefined || prompt.trim() === "") {
-    const randomRows = await db
+  if (!prompt) {
+    const similar = await db
       .select({
-        content: embeddings.content,
+        id: embeddingsTable.id,
       })
-      .from(embeddings)
-      .innerJoin(materials, eq(embeddings.materialID, materials.id))
-      .innerJoin(subjects, eq(materials.subjectID, subjects.id))
-      .where(eq(subjects.id, subjectID))
+      .from(embeddingsTable)
+      .innerJoin(
+        materialsTable,
+        eq(embeddingsTable.materialID, materialsTable.id),
+      )
+      .innerJoin(subjectsTable, eq(materialsTable.subjectID, subjectsTable.id))
+      .where(eq(subjectsTable.id, subjectID))
       .orderBy(sql`RANDOM()`)
-      // .orderBy(sql`RANDOM() * ${sql.raw(Math.random().toString())}`)
       .limit(10);
 
-    console.log("random rows", randomRows);
-    return randomRows;
+    console.log("similar no prompt", similar);
+    return similar;
   }
 
-  const res = await EmbedMany([prompt]);
+  const res: any = await embed(prompt);
 
-  const similarity = sql<number>`1 - (${cosineDistance(embeddings.vector, res[0])})`;
+  const similarity = sql<number>`1 - (${cosineDistance(embeddingsTable.vector, res[0].embedding)})`;
   const similar = await db
     .select({
-      content: embeddings.content,
+      id: embeddingsTable.id,
       similarity,
     })
-    .from(embeddings)
-    .innerJoin(materials, eq(embeddings.materialID, materials.id))
-    .innerJoin(subjects, eq(materials.subjectID, subjects.id))
-    .where(and(eq(subjects.id, subjectID), gt(similarity, 0.3)))
-    .orderBy((t) => desc(t.similarity))
-    .limit(10);
+    .from(embeddingsTable)
+    .innerJoin(
+      materialsTable,
+      eq(embeddingsTable.materialID, materialsTable.id),
+    )
+    .innerJoin(subjectsTable, eq(materialsTable.subjectID, subjectsTable.id))
+    .where(and(eq(subjectsTable.id, subjectID), gt(similarity, 0.2)))
+    .orderBy((t) => desc(t.similarity));
 
-  console.log("similar", similar);
-  return similar;
+  // Shuffle the array randomly
+  const shuffled = similar.sort(() => 0.5 - Math.random());
+
+  // Return the first 10 objects (or less if the array has fewer than 10 items)
+  return shuffled.slice(0, 10);
 }

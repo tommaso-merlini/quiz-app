@@ -2,7 +2,7 @@
 
 import { eq, ExtractTablesWithRelations } from "drizzle-orm";
 import { db } from ".";
-import { materials } from "./schema";
+import { materialsTable } from "./schema";
 import { PgTransaction } from "drizzle-orm/pg-core";
 import { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js";
 
@@ -12,7 +12,9 @@ type TransactionType = PgTransaction<
   ExtractTablesWithRelations<Record<string, never>>
 >;
 
-export async function deleteMaterial(materialID: number, tx?: TransactionType) {
+export async function deleteMaterial(materialID: string, tx?: TransactionType) {
   const queryBuilder = tx || db;
-  await queryBuilder.delete(materials).where(eq(materials.id, materialID));
+  await queryBuilder
+    .delete(materialsTable)
+    .where(eq(materialsTable.id, materialID));
 }

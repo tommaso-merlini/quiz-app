@@ -17,7 +17,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { GetGrade } from "../actions";
-import { QuizContent } from "@/types";
 import {
   Card,
   CardContent,
@@ -25,14 +24,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { QuestionsSchema } from "@/types";
 
 interface DynamicFormProps {
-  questions: QuizContent;
-  difficulty: "easy" | "medium" | "hard";
+  questions: QuestionsSchema;
+  difficulty: "easy" | "medium" | "hard" | "impossible";
   time: number;
   topic?: string;
-  quizID: number;
-  subjectID: number;
+  testID: string;
+  subjectID: string;
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
@@ -40,7 +40,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   difficulty,
   time,
   topic,
-  quizID,
+  testID,
   subjectID,
 }) => {
   const [timeLeft, setTimeLeft] = useState(time * 60); // Convert minutes to seconds
@@ -68,12 +68,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   async function onSubmit(values: { answers: any[] }) {
     setIsSubmitting(true);
-    const resp = await GetGrade(values.answers, quizID);
+    const resp = await GetGrade(values.answers, testID);
     console.log(resp);
   }
 
   const renderQuestionField = (
-    question: QuizContent[number],
+    question: QuestionsSchema[number],
     index: number,
   ) => {
     switch (question.type) {
@@ -161,13 +161,17 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     }
   };
 
-  const getDifficultyColor = (difficulty: "easy" | "medium" | "hard") => {
+  const getDifficultyColor = (
+    difficulty: "easy" | "medium" | "hard" | "impossible",
+  ) => {
     switch (difficulty) {
       case "easy":
         return "bg-green-500";
       case "medium":
         return "bg-yellow-500";
       case "hard":
+        return "bg-red-500";
+      case "impossible":
         return "bg-red-500";
       default:
         return "bg-gray-500";
@@ -214,7 +218,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             ))}
             <div className="flex flex-row justify-end">
               <Button size="lg" type="submit" disabled={isSubmitting}>
-                {!isSubmitting ? "Submit Quiz" : "Grading your Quiz..."}
+                {!isSubmitting ? "Submit Test" : "Grading your Test..."}
               </Button>
             </div>
           </form>

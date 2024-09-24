@@ -1,24 +1,26 @@
 "use server";
 
 import { db } from "@/db";
-import { getQuizById } from "@/db/queries";
-import { grades as gradesTable, InsertGrade, quizzes } from "@/db/schema";
-import { quizSchema } from "./schema";
-import { z } from "zod";
+import { getTestByID } from "@/db/queries";
+import {
+  gradesTable as gradesTable,
+  InsertGrade,
+  testsTable,
+} from "@/db/schema";
 import { redirect } from "next/navigation";
 import { Answer, OpenEndedType } from "@/types";
 import { and, eq, lt, sql } from "drizzle-orm";
 import { GradeOpenEndedQuestions } from "@/ai/gradeOpenEndedQuestions";
+import { v4 as uuidv4 } from "uuid";
 
-type QuizType = z.infer<typeof quizSchema>["questionTypes"][number];
-
-export async function GetGrade(userAnswers: any[], quizID: number) {
-  const quiz = await getQuizById(quizID);
+export async function GetGrade(userAnswers: any[], testID: string) {
+  const test = await getTestByID(testID);
   const grade: InsertGrade = {
-    quizID,
+    id: uuidv4(),
+    testID,
     answers: [],
   };
-  const questions: QuizType[] = quiz.content as QuizType[];
+  const questions = test.questions;
   const r: (OpenEndedType & { userAnswer: any })[] = [];
   questions.map((q, i) => {
     if (q.type === "openEnded") {
@@ -28,7 +30,7 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
       });
     }
   });
-  const { grades } = await GradeOpenEndedQuestions(r, quiz.language);
+  const { grades } = await GradeOpenEndedQuestions(r, test.language);
   let gradesIndex = 0;
 
   const correctionPromises = questions.map(async (question, index) => {
@@ -93,22 +95,22 @@ export async function GetGrade(userAnswers: any[], quizID: number) {
   redirect(`/grades/${resp[0].id}`);
 }
 
-export async function isRunningQuiz(quizId: number): Promise<boolean> {
-  const runningQuiz = await db
+export async function isRunningTest(testID: string): Promise<boolean> {
+  const runningTest = await db
     .select({
-      id: quizzes.id,
+      id: testsTable.id,
     })
-    .from(quizzes)
+    .from(testsTable)
     .where(
       and(
-        eq(quizzes.id, quizId),
+        eq(testsTable.id, testID),
         lt(
           sql`CURRENT_TIMESTAMP`,
-          sql`${quizzes.createdAt} + (${quizzes.time} || ' minutes')::interval`,
+          sql`${testsTable.createdAt} + (${testsTable.timeInMinutes} || ' minutes')::interval`,
         ),
       ),
     )
     .limit(1);
 
-  return runningQuiz.length > 0;
+  return runningTest.length > 0;
 }

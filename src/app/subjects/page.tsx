@@ -1,28 +1,23 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { getUserSubjectsWithMaterialsAndQuizCount } from "./_actions/getSubjectsDeep";
-import { getUserByAuthID, getUserGoals, getUserGrades } from "@/db/queries";
+import { getUserSubjectsWithMaterialsAndTestCount } from "./_actions/getSubjectsDeep";
+import { getUserGrades } from "@/db/queries";
 import { CreateSubjectButton } from "./_components/CreateSubjectButton";
 import { SubjectCard } from "./_components/SubjectCard";
-import UserIntroductionCard from "./_components/UserIntroductionCard";
 import Chart from "./_components/Chart";
 import { UserGrades } from "../grades/_components/gradesTable";
-import { Chart2 } from "./_components/Chart2";
+import { auth } from "@/components/lucia/auth";
+import { Library, LibrarySquare } from "lucide-react";
 
 export default async function Subjects() {
-  const userAuth = auth();
-  if (!userAuth.userId) {
+  const { user } = await auth();
+  if (!user) {
     redirect("/");
   }
-
-  const user = await getUserByAuthID(userAuth.userId);
-  if (!user) {
-    throw new Error("shit");
+  if (!user.isSubscribed && !user.canUseFreely) {
+    redirect("/pricing");
   }
 
-  const goals = await getUserGoals(user.id);
-
-  const subjects = await getUserSubjectsWithMaterialsAndQuizCount(user.id);
+  const subjects = await getUserSubjectsWithMaterialsAndTestCount(user.id);
   const grades: UserGrades = await getUserGrades(user.id);
 
   return (
@@ -31,7 +26,7 @@ export default async function Subjects() {
         <>
           <div className="flex flex-row justify-between">
             <h1 className="text-3xl font-semibold mb-6 flex items-center underline decoration-yellow-300 decoration-4 decoration-solid">
-              My Subjects
+              <span>My Subjects</span>
             </h1>
 
             <CreateSubjectButton />

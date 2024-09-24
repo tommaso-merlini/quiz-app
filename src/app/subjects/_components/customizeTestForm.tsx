@@ -20,11 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import languages from "@/utils/languages";
-import { createQuiz } from "../_actions/createQuiz";
+import { createTest } from "../_actions/createTest";
 import { useState } from "react";
 import { SubjectWithMaterials } from "@/types";
 
-export function CustomizeQuizForm({
+export function CustomizeTestForm({
   children,
   subject,
 }: {
@@ -38,16 +38,16 @@ export function CustomizeQuizForm({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[700px]">
         <form
-          action={createQuiz}
+          action={createTest}
           onSubmit={() => {
             setIsSubmitted(true);
           }}
         >
           <input type="hidden" name="subjectID" value={subject.id} />
           <DialogHeader>
-            <DialogTitle>Customize Quiz</DialogTitle>
+            <DialogTitle>Customize Test</DialogTitle>
             <DialogDescription>
-              Create your new quiz in one-click.
+              Create your new test in one-click.
             </DialogDescription>
           </DialogHeader>
           <div className="grid w-full items-center gap-4 pt-4">
@@ -69,7 +69,7 @@ export function CustomizeQuizForm({
               <Input
                 type="text"
                 name="topic"
-                placeholder="a topic you want to get quizzed on"
+                placeholder="a topic you want to get tested on"
               />
               <Label htmlFor="questions">Questions Amount</Label>
               <Select name="questions" required defaultValue="5">
@@ -92,6 +92,7 @@ export function CustomizeQuizForm({
                   <SelectItem value="easy">easy</SelectItem>
                   <SelectItem value="medium">medium</SelectItem>
                   <SelectItem value="hard">hard</SelectItem>
+                  <SelectItem value="impossible">impossible</SelectItem>
                 </SelectContent>
               </Select>
               <Label htmlFor="timeLimits">Time Limit</Label>
@@ -115,7 +116,7 @@ export function CustomizeQuizForm({
               </Button>
             </DialogTrigger>
             <Button size="lg" type="submit" disabled={isSubmitted}>
-              {!isSubmitted ? "Start Quiz!" : "Creating Quiz..."}
+              {!isSubmitted ? "Start Test!" : "Creating Test..."}
             </Button>
           </DialogFooter>
         </form>

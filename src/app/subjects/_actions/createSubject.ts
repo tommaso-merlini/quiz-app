@@ -1,30 +1,24 @@
 "use server";
 
+import { auth } from "@/components/lucia/auth";
 import { db } from "@/db";
-import { subjects, users } from "@/db/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { subjectsTable } from "@/db/schema";
 import { revalidatePath } from "next/cache";
+import { v4 as uuidv4 } from "uuid";
 
 export async function createSubject(fd: FormData) {
-  const userAuth = auth();
-  if (!userAuth.userId) {
-    throw new Error("not authenticated");
-  }
-
   const name = fd.get("name");
   if (!name) {
     throw new Error("shit");
   }
 
-  const user = (
-    await db.select().from(users).where(eq(users.authID, userAuth.userId))
-  )[0];
+  const { user } = await auth();
   if (!user) {
-    throw new Error("shit");
+    throw new Error("not authenticated");
   }
 
-  await db.insert(subjects).values({
+  await db.insert(subjectsTable).values({
+    id: uuidv4(),
     userID: user.id,
     name: name as string,
   });

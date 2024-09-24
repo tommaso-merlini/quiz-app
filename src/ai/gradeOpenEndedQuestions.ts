@@ -5,28 +5,30 @@ import { CoreMessage, generateObject } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { OpenEndedType } from "@/types";
+import { google } from "@ai-sdk/google";
 
 export async function GradeOpenEndedQuestions(
-  quizzes: (OpenEndedType & { userAnswer: any })[],
+  tests: (OpenEndedType & { userAnswer: any })[],
   language: string,
 ) {
-  // const model = anthropic("claude-3-5-sonnet-20240620");
+  const model = anthropic("claude-3-5-sonnet-20240620");
   // const model = anthropic("claude-3-haiku-20240307");
-  const model = openai("gpt-4o-mini");
+  // const model = openai("gpt-4o-mini");
+  // const model = google("gemini-1.5-flash-latest");
 
   const messages: CoreMessage[] = [];
-  console.log("quizzes:", quizzes);
-  quizzes.map((q, i) => {
+  console.log("tests:", tests);
+  tests.map((t, i) => {
     messages.push({
       role: "user",
       content: [
         {
           type: "text",
-          text: `this is the user answer for question ${i + 1}: ${q.userAnswer === null || q.userAnswer === undefined || q.userAnswer.trim() === "" ? "No answer provided" : q.userAnswer}`,
+          text: `this is the user answer for question ${i + 1}: ${t.userAnswer === null || t.userAnswer === undefined || t.userAnswer.trim() === "" ? "No answer provided" : t.userAnswer}`,
         },
         {
           type: "text",
-          text: `this is the correct answer (DO NOT GRADE THIS ANSWER, YOU MUST GRADE THE USER ANSWER BASED ON THIS ANSWER) for question ${i}: ${q.answer}`,
+          text: `this is the correct answer (DO NOT GRADE THIS ANSWER, YOU MUST GRADE THE USER ANSWER BASED ON THIS ANSWER) for question ${i}: ${t.answer}`,
         },
       ],
     });

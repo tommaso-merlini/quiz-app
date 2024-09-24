@@ -1,11 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { openEndedSchema, quizSchema } from "./app/quizzes/[quizID]/schema";
+import { openEndedSchema, testSchema } from "./app/tests/[testID]/schema";
 import { SelectMaterial, SelectSubject } from "./db/schema";
 
-export type QuizType = z.infer<typeof quizSchema>;
-export type QuizContent = QuizType["questionTypes"];
 export type Answer = {
   isCorrect: boolean;
   userAnswer: string;
@@ -13,6 +11,9 @@ export type Answer = {
 };
 export type SubjectWithMaterials = SelectSubject & {
   materials: SelectMaterial[];
-  quizCount: number;
+  testCount: number;
 };
+
 export type OpenEndedType = z.infer<typeof openEndedSchema>;
+export type TestSchema = z.infer<typeof testSchema>;
+export type QuestionsSchema = TestSchema["questions"];

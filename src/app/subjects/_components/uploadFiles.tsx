@@ -15,14 +15,13 @@ import { FileUploader } from "./fileUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { dumpFiles } from "../_actions/dumpFiles";
-import { dumpText } from "../_actions/dumpText";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 
-export function UploadFiles({ subjectID }: { subjectID: number }) {
+export function UploadFiles({ subjectID }: { subjectID: string }) {
   const [files, setFiles] = React.useState<File[]>([]);
   const [name, setName] = React.useState<string>("");
   const [text, setText] = React.useState<string>("");
@@ -59,36 +58,7 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
       setProgress(100);
       setFiles([]);
       toast("Files uploaded successfully!", {
-        description: "You just uploaded some files, now go take a quiz!",
-      });
-    } catch (error) {
-      toast.error("Upload failed. Please try again.");
-    } finally {
-      clearInterval(progressInterval);
-      setIsLoading(false);
-      setOpen(false);
-      setProgress(0);
-    }
-  };
-
-  const handleUploadText = async () => {
-    if (name.trim() === "" || text.trim() === "") {
-      throw new Error("Name and text are required");
-    }
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("text", text);
-    formData.append("subjectID", subjectID.toString());
-    setIsLoading(true);
-    const progressInterval = simulateProgress();
-    try {
-      await dumpText(formData);
-      clearInterval(progressInterval);
-      setProgress(100);
-      setName("");
-      setText("");
-      toast("Text uploaded successfully!", {
-        description: "You just uploaded a text, now go take a quiz!",
+        description: "You just uploaded some files, now go take a test!",
       });
     } catch (error) {
       toast.error("Upload failed. Please try again.");
@@ -104,12 +74,12 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex-1">
-          Dump Material
+          Dump Notes
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Dump Material</DialogTitle>
+          <DialogTitle>Dump Notes</DialogTitle>
           <DialogDescription>
             Dump all the Material you got: text, images, pdfs
           </DialogDescription>
@@ -129,7 +99,7 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
           </TabsList>
           <TabsContent value="files">
             <FileUploader
-              maxFiles={8}
+              maxFiles={1}
               maxSize={100 * 1024 * 1024} //TODO: this is a max of 100 MB, what can i do
               onValueChange={setFiles}
             />
@@ -167,9 +137,6 @@ export function UploadFiles({ subjectID }: { subjectID: number }) {
                   <Progress value={progress} className="w-full" />
                 </div>
               )}
-              <Button disabled={isLoading} onClick={handleUploadText}>
-                {!isLoading ? "Upload Text" : "Uploading..."}
-              </Button>
             </DialogFooter>
           </TabsContent>
         </Tabs>

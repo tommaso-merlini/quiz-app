@@ -25,8 +25,8 @@ import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { getRunningQuizID } from "../_actions/getRunningQuizID";
-import { CustomizeQuizForm } from "./customizeQuizForm";
+import { getRunningTestID } from "../_actions/getRunningTestID";
+import { CustomizeTestForm } from "./customizeTestForm";
 import { UploadFiles } from "./uploadFiles";
 import { deleteMaterialAndFile } from "../_actions/deleteMaterialAndFile";
 import { SubjectWithMaterials } from "@/types";
@@ -41,7 +41,7 @@ export function SubjectCard({ subject }: { subject: SubjectWithMaterials }) {
           </CardTitle>
           <CardDescription>
             <Link href="/grades" className="hover:underline">
-              {subject.quizCount} {subject.quizCount == 1 ? "quiz" : "quizzes"}{" "}
+              {subject.testCount} {subject.testCount == 1 ? "test" : "tests"}{" "}
               taken
             </Link>
           </CardDescription>
@@ -50,7 +50,7 @@ export function SubjectCard({ subject }: { subject: SubjectWithMaterials }) {
           <PopoverTrigger asChild>
             <p className="text-sm text-gray-500 cursor-pointer hover:underline whitespace-nowrap">
               {subject.materials.length}{" "}
-              {subject.materials.length === 1 ? "material" : "materials"}
+              {subject.materials.length === 1 ? "note" : "notes"} uploaded
             </p>
           </PopoverTrigger>
           <PopoverContent className="w-80 p-0">
@@ -61,7 +61,11 @@ export function SubjectCard({ subject }: { subject: SubjectWithMaterials }) {
                     key={index}
                     className="flex items-center justify-between py-2  cursor-pointer rounded px-2"
                   >
-                    <Link href={m.url || "#"} className="max-w-[80%] break-all">
+                    {/* TODO: what if the file is not a pdf?*/}
+                    <Link
+                      href={`https://bucket-production-b4c5.up.railway.app/uploads/${m.id}.pdf`}
+                      className="max-w-[80%] break-all"
+                    >
                       {m.name}
                     </Link>
                     <AlertDialog>
@@ -108,16 +112,16 @@ export function SubjectCard({ subject }: { subject: SubjectWithMaterials }) {
         </Popover>
       </CardHeader>
       <CardFooter className="absolute bottom-0 space-x-4 w-full">
-        <TakeQuizButton subject={subject} />
+        <TakeTestButton subject={subject} />
         <DumpMaterialButton subject={subject} />
       </CardFooter>
     </Card>
   );
 }
 
-async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
-  const runningQuizID = await getRunningQuizID(subject.id);
-  if (runningQuizID) {
+async function TakeTestButton({ subject }: { subject: SubjectWithMaterials }) {
+  const runningTestID = await getRunningTestID(subject.id);
+  if (runningTestID) {
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
@@ -168,24 +172,24 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                 strokeLinejoin="round"
               />
             </svg>
-            Take Quiz
+            Take Test
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              You have a quiz running on this subject
+              You have a test running on this subject
             </AlertDialogTitle>
             <AlertDialogDescription>
-              You are trying to create a quiz on this subject but you alredy did
+              You are trying to create a test on this subject but you alredy did
               that and havent finished it. If you want to discard the previous
-              quiz just complete it blank.
+              test just complete it blank.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Go Back</AlertDialogCancel>
-            <Link href={`/quizzes/${runningQuizID}`}>
-              <AlertDialogAction>Finish quiz</AlertDialogAction>
+            <Link href={`/tests/${runningTestID}`}>
+              <AlertDialogAction>Finish Test</AlertDialogAction>
             </Link>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -243,7 +247,7 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                   strokeLinejoin="round"
                 />
               </svg>
-              Take Quiz
+              Take Test
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -252,8 +256,8 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                 You havent dumped any material yet
               </AlertDialogTitle>
               <AlertDialogDescription>
-                You are trying to start a quiz without any material. Please Dump
-                some notes before creating a quiz
+                You are trying to start a test without any material. Please Dump
+                some notes before creating a test
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -264,7 +268,7 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
       );
     } else {
       return (
-        <CustomizeQuizForm subject={subject}>
+        <CustomizeTestForm subject={subject}>
           <Button className="flex flex-1 justify-evenly">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -312,9 +316,9 @@ async function TakeQuizButton({ subject }: { subject: SubjectWithMaterials }) {
                 strokeLinejoin="round"
               />
             </svg>
-            Take Quiz
+            Take Test
           </Button>
-        </CustomizeQuizForm>
+        </CustomizeTestForm>
       );
     }
   }

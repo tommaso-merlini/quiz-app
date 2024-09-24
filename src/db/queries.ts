@@ -2,60 +2,69 @@
 
 import { desc, eq } from "drizzle-orm";
 import { db } from ".";
-import { goals, grades, materials, quizzes, subjects, users } from "./schema";
+import {
+  gradesTable,
+  materialsTable,
+  subjectsTable,
+  testsTable,
+  usersTable,
+} from "./schema";
 
-export async function getUserByAuthID(authID: string) {
+export async function getUserByID(id: string) {
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, id))
+    .limit(1);
+  return user;
+}
+
+export async function getUserByEmail(email: string) {
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, email))
+    .limit(1);
+  return user;
+}
+
+export async function getSubjectByID(id: string) {
   return (
-    await db.select().from(users).where(eq(users.authID, authID)).limit(1)
+    await db
+      .select()
+      .from(subjectsTable)
+      .where(eq(subjectsTable.id, id))
+      .limit(1)
   )[0];
 }
 
-export async function getSubjectByID(id: number) {
+export async function getTestByID(id: string) {
   return (
-    await db.select().from(subjects).where(eq(subjects.id, id)).limit(1)
+    await db.select().from(testsTable).where(eq(testsTable.id, id)).limit(1)
   )[0];
 }
 
-export async function getUserGoals(userID: number) {
+export async function getMaterialById(id: string) {
   return (
-    await db.select().from(goals).where(eq(goals.userID, userID)).limit(1)
+    await db
+      .select()
+      .from(materialsTable)
+      .where(eq(materialsTable.id, id))
+      .limit(1)
   )[0];
 }
 
-export async function getQuizById(id: number) {
-  return (
-    await db.select().from(quizzes).where(eq(quizzes.id, id)).limit(1)
-  )[0];
-}
-
-export async function getMaterialById(id: number) {
-  return (
-    await db.select().from(materials).where(eq(materials.id, id)).limit(1)
-  )[0];
-}
-
-export async function getUserGrades(userID: number) {
+export async function getUserGrades(userID: string) {
   return await db
     .select({
-      grade: grades,
-      quiz: {
-        id: quizzes.id,
-        content: quizzes.content,
-        language: quizzes.language,
-        difficulty: quizzes.difficulty,
-        time: quizzes.time,
-        topic: quizzes.topic,
-        questions: quizzes.questions,
-      },
-      subject: {
-        id: subjects.id,
-        name: subjects.name,
-      },
+      grade: gradesTable,
+      test: testsTable,
+      subject: subjectsTable,
     })
-    .from(grades)
-    .innerJoin(quizzes, eq(grades.quizID, quizzes.id))
-    .innerJoin(subjects, eq(quizzes.subjectID, subjects.id))
-    .innerJoin(users, eq(subjects.userID, users.id))
-    .where(eq(users.id, userID))
-    .orderBy(desc(grades.createdAt));
+    .from(gradesTable)
+    .innerJoin(testsTable, eq(gradesTable.testID, testsTable.id))
+    .innerJoin(subjectsTable, eq(testsTable.subjectID, subjectsTable.id))
+    .innerJoin(usersTable, eq(subjectsTable.userID, usersTable.id))
+    .where(eq(usersTable.id, userID))
+    .orderBy(desc(gradesTable.createdAt));
 }

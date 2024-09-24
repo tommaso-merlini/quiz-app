@@ -1,3 +1,4 @@
+import { Answer, QuestionsSchema } from "@/types";
 import languages from "@/utils/languages";
 import {
   boolean,
@@ -5,29 +6,39 @@ import {
   integer,
   json,
   pgTable,
-  serial,
   text,
   timestamp,
+  uuid,
   vector,
 } from "drizzle-orm/pg-core";
+import { db } from ".";
+import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  authID: text("authID").notNull().unique(),
-  name: text("name").notNull(),
-  age: integer("age").notNull(),
+export const usersTable = pgTable("users", {
+  id: uuid("id").primaryKey(),
   email: text("email").notNull().unique(),
+  hashedPassword: text("hashed_password").notNull(),
+  isSubscribed: boolean("isSubscribed").notNull().default(false),
+  canUseFreely: boolean("canUseFreely").notNull().default(false),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt")
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const subjects = pgTable("subjects", {
-  id: serial("id").primaryKey(),
-  userID: integer("userID")
+export const sessionsTable = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: uuid("userID")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expiresAt").notNull(),
+});
+
+export const subjectsTable = pgTable("subjects", {
+  id: uuid("id").primaryKey(),
+  userID: uuid("userID")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt")
@@ -35,74 +46,28 @@ export const subjects = pgTable("subjects", {
     .$onUpdate(() => new Date()),
 });
 
-export const quizzes = pgTable("quizzes", {
-  id: serial("id").primaryKey(),
-  subjectID: integer("subjectID")
-    .notNull()
-    .references(() => subjects.id, { onDelete: "cascade" }), //TODO: really deleting a subject should delete even its quizzes? i think not
-  content: json("content").notNull(),
-  language: text("language", {
-    enum: languages,
-  }).notNull(),
-  difficulty: text("difficulty", {
-    enum: ["easy", "medium", "hard"],
-  }).notNull(),
-  time: integer("time").notNull(),
-  topic: text("topic"),
-  questions: integer("questions").notNull(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt")
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export const grades = pgTable("grades", {
-  id: serial("id").primaryKey(),
-  quizID: integer("quizID")
-    .notNull()
-    .references(() => quizzes.id, { onDelete: "cascade" }),
-  answers: json("answers").notNull(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt")
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export const materials = pgTable("materials", {
-  id: serial("id").primaryKey(),
+export const materialsTable = pgTable("materials", {
+  id: uuid("id").primaryKey(),
   name: text("name").notNull(),
-  subjectID: integer("subjectID")
+  subjectID: uuid("subjectID")
     .notNull()
-    .references(() => subjects.id, { onDelete: "cascade" }),
-  type: text("type", {
-    enum: ["text", "image", "pdf"],
-  }).notNull(),
-  url: text("url"),
+    .references(() => subjectsTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt")
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const goals = pgTable("goals", {
-  id: serial("id").primaryKey(),
-  userID: integer("userID")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  betterGrades: boolean("betterGrades"),
-  moreTimeStudying: boolean("moreTimeStudying"),
-});
-
-export const embeddings = pgTable(
+export const embeddingsTable = pgTable(
   "embeddings",
   {
-    id: serial("id").primaryKey(),
-    materialID: integer("materialID")
+    id: uuid("id").primaryKey(),
+    materialID: uuid("materialID")
       .notNull()
-      .references(() => materials.id, { onDelete: "cascade" }),
-    vector: vector("vector", { dimensions: 1536 }),
-    content: text("content").notNull(),
+      .references(() => materialsTable.id, { onDelete: "cascade" }),
+    vector: vector("vector", { dimensions: 768 }),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
+    pageNumber: integer("pageNumber").notNull(),
     updatedAt: timestamp("updatedAt")
       .notNull()
       .$onUpdate(() => new Date()),
@@ -115,23 +80,59 @@ export const embeddings = pgTable(
   }),
 );
 
-export type InsertUser = typeof users.$inferInsert;
-export type SelectUser = typeof users.$inferSelect;
+export const testsTable = pgTable("tests", {
+  id: uuid("id").primaryKey(),
+  subjectID: uuid("subjectID")
+    .notNull()
+    .references(() => subjectsTable.id, { onDelete: "cascade" }), //TODO: really deleting a subject should delete even its tests? i think not
+  questions: json("questions").notNull().$type<QuestionsSchema>(),
+  language: text("language", {
+    enum: languages,
+  }).notNull(),
+  difficulty: text("difficulty", {
+    enum: ["easy", "medium", "hard", "impossible"],
+  }).notNull(),
+  timeInMinutes: integer("timeInMinutes").notNull(),
+  topic: text("topic"),
+  questionsQty: integer("questionsQty").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt")
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
 
-export type InsertQuiz = typeof quizzes.$inferInsert;
-export type SelectQuiz = typeof quizzes.$inferSelect;
+export const gradesTable = pgTable("grades", {
+  id: uuid("id").primaryKey(),
+  testID: uuid("testID")
+    .notNull()
+    .references(() => testsTable.id, { onDelete: "cascade" }),
+  answers: json("answers").notNull().$type<Answer[]>(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt")
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
 
-export type InsertSubject = typeof subjects.$inferInsert;
-export type SelectSubject = typeof subjects.$inferSelect;
+export type InsertUser = typeof usersTable.$inferInsert;
+export type SelectUser = typeof usersTable.$inferSelect;
 
-export type InsertMaterial = typeof materials.$inferInsert;
-export type SelectMaterial = typeof materials.$inferSelect;
+export type InsertTest = typeof testsTable.$inferInsert;
+export type SelectTest = typeof testsTable.$inferSelect;
 
-export type InsertEmbedding = typeof embeddings.$inferInsert;
-export type SelectEmbedding = typeof embeddings.$inferSelect;
+export type InsertSubject = typeof subjectsTable.$inferInsert;
+export type SelectSubject = typeof subjectsTable.$inferSelect;
 
-export type InsertGrade = typeof grades.$inferInsert;
-export type SelectGrade = typeof grades.$inferSelect;
+export type InsertMaterial = typeof materialsTable.$inferInsert;
+export type SelectMaterial = typeof materialsTable.$inferSelect;
 
-export type InsertGoal = typeof goals.$inferInsert;
-export type SelectGoal = typeof goals.$inferSelect;
+export type InsertEmbedding = typeof embeddingsTable.$inferInsert;
+export type SelectEmbedding = typeof embeddingsTable.$inferSelect;
+
+export type InsertGrade = typeof gradesTable.$inferInsert;
+export type SelectGrade = typeof gradesTable.$inferSelect;
+
+export const adapter = new DrizzlePostgreSQLAdapter(
+  db,
+  sessionsTable as any,
+  usersTable as any,
+);

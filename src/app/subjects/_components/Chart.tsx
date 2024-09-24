@@ -46,19 +46,19 @@ export default function Chart({ grades }: { grades: UserGrades }) {
     });
     chartData.push({
       date: g.grade.createdAt,
-      grade: (100 * correctAnswersCount) / g.quiz.questions,
+      grade: (100 * correctAnswersCount) / g.test.questionsQty,
     });
   });
   chartData.reverse();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Quizzes overview</CardTitle>
+        <CardTitle>Tests analytics</CardTitle>
         <CardDescription>Showing trend of your grades</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <LineChart
+          <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
@@ -93,14 +93,14 @@ export default function Chart({ grades }: { grades: UserGrades }) {
                 );
               }}
             />
-            <Line
+            <Area
               dataKey="grade"
-              type="linear"
+              type="natural"
               fill="var(--color-desktop)"
               fillOpacity={0.4}
               stroke="var(--color-desktop)"
             />
-          </LineChart>
+          </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>

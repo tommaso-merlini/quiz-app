@@ -1,14 +1,17 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { getUserByAuthID, getUserGrades } from "@/db/queries";
+import { getUserGrades } from "@/db/queries";
 import GradesTable from "./_components/gradesTable";
+import { auth } from "@/components/lucia/auth";
 
 export default async function Grades() {
-  const userAuth = auth();
-  if (!userAuth.userId) {
+  const { user } = await auth();
+  if (!user) {
     redirect("/");
   }
-  const user = await getUserByAuthID(userAuth.userId);
+  if (!user.canUseFreely && !user.isSubscribed) {
+    redirect("/pricing");
+  }
+
   const grades = await getUserGrades(user.id);
 
   return (

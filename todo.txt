@@ -1,0 +1,12 @@
+[] multiple file uploads
+[] more charts
+[] goals
+[] find better and cheaper VLM 
+[x] stripe checkout
+[] video per la pagina iniziale {_IMPORTANTE_} (1: crea subject e dump note, 2: creazione e risoluzione test, 3: grading del test)
+[] pagina profilo (con email, password, cambia password, lingua ...)
+[x] pricing page
+[] cosa fare se l'abbonamento scade il mese dopo e non paga
+[x] success page stripe 
+[] cancel page stripe
+[] mettere un email di contatto {_IMPORTANTE_}
