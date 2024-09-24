@@ -33,7 +33,6 @@ export default function SlideShow() {
   const handlers = useSwipeable({
     onSwipedLeft: () => nextSlide(),
     onSwipedRight: () => prevSlide(),
-    preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
 

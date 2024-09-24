@@ -11,14 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  UserCircle,
-  Settings,
-  LogOut,
-  Library,
-  AreaChart,
-  LibrarySquare,
-} from "lucide-react";
+import { LogOut, Library, AreaChart, LibrarySquare } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -26,9 +19,10 @@ async function logout() {
   "use server";
   const { session } = await auth();
   if (!session) {
-    return {
-      error: "Unauthorized",
-    };
+    throw new Error("Unauthorized");
+    // return {
+    //   error: "Unauthorized",
+    // };
   }
 
   await lucia.invalidateSession(session.id);
@@ -39,7 +33,7 @@ async function logout() {
     sessionCookie.value,
     sessionCookie.attributes,
   );
-  return redirect("/");
+  redirect("/");
 }
 
 export const metadata: Metadata = {
