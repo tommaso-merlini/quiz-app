@@ -3,7 +3,7 @@ const env = process.env.NODE_ENV;
 
 export const getApiUrl = () => {
   if (env === "production") {
-    return "http://slaytest-api.railway.internal:3000";
+    return "https://slaytest-api-production.up.railway.app";
   }
 
   return "http://localhost:3000";
