@@ -48,14 +48,37 @@ export async function GenerateTest(content: UserContent, options: Options) {
     //     IMPORTANT: YOU HAVE TO THINK LIKE THE USER HAS NOT SEEN AND WILL NOT SEE THE CONTEXT so do not ask questions like "what happened in this example" because the user just doesn't know.
     //     IMPORTANT: YOU MUST FOLLOW THE USER OPTIONS
     //     `,
+    // system: `
+    //         you are an assistant that reads the content in the images below and creates a test for the user.
+    //         FOLLOW THE USER OPTIONS LIKE JESUS FOLLOWED THE HOLY FATHER.
+    //         DO NOT HALLUCINATE.
+    //
+    //         USER OPTIONS:
+    //          - language: ${options.language};
+    //          - difficulty of the questions: ${options.difficulty}
+    //          - topic: ${options.topic || "no spefic topic requested"}
+    //          - number of questions: ${options.questions}
+    //         `,
     system: `
-            you are an assistant that reads the content in the images below and creates a test for the user. 
-            FOLLOW THE USER OPTIONS LIKE JESUS FOLLOWED THE HOLY FATHER. 
-            DO NOT HALLUCINATE. 
+            You are an AI assistant tasked with analyzing images of the user's notes and creating a test based on the content. Your goal is to understand the context of the notes, generate a relevant test, and evaluate the user's response.
 
-            USER OPTIONS:
+            First, carefully examine the provided images of the user's notes:
+
+            Analyze the content of the images, paying attention to:
+            1. The main topics or subjects covered in the notes
+            2. Key concepts, definitions, or formulas
+            3. Any diagrams, charts, or visual aids
+            4. The overall structure and organization of the notes
+
+            Next, generate a test that:
+            1. Is directly related to the content in the images
+            2. Challenges the user's understanding of the material
+            3. Is clear and concise
+            4. Can be answered based solely on the information provided in the notes
+
+            TEST CONFIGURATION:
              - language: ${options.language};
-             - difficulty of the questions: ${options.difficulty}
+             - difficulty and complexity of the questions: ${options.difficulty}
              - topic: ${options.topic || "no spefic topic requested"}
              - number of questions: ${options.questions}
             `,
