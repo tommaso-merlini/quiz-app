@@ -24,7 +24,7 @@ export default async function Home() {
           once, practice infinitely.
         </span>
         <Link href="/pricing">
-          <Button>Start Studying!</Button>
+          <Button size="lg">Start Studying!</Button>
         </Link>
       </section>
       <div className="w-full bg-neutral-50 mt-4 rounded-xl mb-10 relative">

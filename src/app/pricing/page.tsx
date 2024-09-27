@@ -23,7 +23,7 @@ const formSubmitted = async (formData: FormData) => {
   }
 
   const checkoutURL = await createCheckoutSession(
-    "price_1Q07BDBrtv952LVmL2rrFMZX",
+    "price_1Q3OKkBrtv952LVmFaMpf5Pe",
     userID,
   );
   redirect(checkoutURL);
@@ -35,7 +35,7 @@ export default async function PricingPage() {
     redirect("/subjects");
   }
 
-  const monthlyPrice = 6.99;
+  const monthlyPrice = 5.99;
 
   const features = [
     "Unlimited projects",

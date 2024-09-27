@@ -22,7 +22,7 @@ export async function GenerateTest(content: UserContent, options: Options) {
   // const model = chromeai("text");
   // const model = anthropic("claude-3-haiku-20240307");
   const model = openai("gpt-4o-mini");
-  // const model = google("gemini-1.5-flash");
+  // const model = google("gemini-1.5-pro-latest");
 
   const { object } = await generateObject({
     model,

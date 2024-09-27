@@ -53,6 +53,9 @@ export async function createTest(fd: FormData) {
 
   const content: UserContent = [];
   for (const embedding of embeddings) {
+    console.log(
+      `https://bucket-production-b4c5.up.railway.app/uploads/${embedding.id}.png`,
+    );
     const image = await imageUrlToUint8Array(
       `https://bucket-production-b4c5.up.railway.app/uploads/${embedding.id}.png`,
     );

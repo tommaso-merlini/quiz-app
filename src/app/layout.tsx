@@ -64,7 +64,9 @@ export default async function RootLayout({
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button size="sm">Sign Up</Button>
+                  <Button size="sm" variant="secondary">
+                    Sign Up
+                  </Button>
                 </Link>
               </div>
             ) : (

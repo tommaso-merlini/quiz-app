@@ -31,15 +31,17 @@ export async function dumpFiles(formData: FormData) {
   //TODO: FARE LE SEGUENTI COSE PER OGNI FILE
   const newForm = new FormData();
   newForm.append("file", file);
-  const response: any = await fetch(`${getApiUrl()}/upload`, {
-    method: "POST",
-    body: newForm,
-  });
-  console.log("===============");
-  console.log(response);
-  console.log("===============");
+  const response: any = await fetch(
+    `https://slaytest-api-production.up.railway.app/upload`,
+    {
+      method: "POST",
+      body: newForm,
+    },
+  );
 
   const json = (await response.json()) as Response;
+
+  console.log("immagini fatte");
 
   const allFilesEmbeddings: InsertEmbedding[] = [];
   await db.transaction(async (tx) => {
@@ -51,19 +53,55 @@ export async function dumpFiles(formData: FormData) {
         subjectID: subjectID,
       })
       .returning();
-    await Promise.all(
-      json.pages.map(async (page) => {
-        const res: any = await embed(
-          `https://bucket-production-b4c5.up.railway.app/uploads/${page.id}.png`,
-        );
-        allFilesEmbeddings.push({
-          id: page.id,
-          materialID: material.id,
-          vector: res[0].embedding,
-          pageNumber: page.index + 1,
-        });
-      }),
-    );
+
+    console.log("material creato");
+    // await Promise.all(
+    //   json.pages.map(async (page) => {
+    //     const res: any = await embed(
+    //       `https://bucket-production-b4c5.up.railway.app/uploads/${page.id}.png`,
+    //     );
+    //     allFilesEmbeddings.push({
+    //       id: page.id,
+    //       materialID: material.id,
+    //       vector: res[0].embedding,
+    //       pageNumber: page.index + 1,
+    //     });
+    //   }),
+
+    const chunkSize = 10;
+    const chunks: string[] = [];
+    let currentChunk = "";
+    let chunkCounter = 0;
+
+    json.pages.forEach((page, index) => {
+      currentChunk += `https://bucket-production-b4c5.up.railway.app/uploads/${page.id}.png\n`;
+      chunkCounter++;
+
+      if (chunkCounter === chunkSize || index === json.pages.length - 1) {
+        chunks.push(currentChunk.trim());
+        currentChunk = "";
+        chunkCounter = 0;
+      }
+    });
+
+    const embeddingPromises = chunks.map((chunk) => embed(chunk));
+    const embeddingResults = await Promise.all(embeddingPromises);
+
+    let allFilesEmbeddings: InsertEmbedding[] = [];
+
+    embeddingResults.forEach((chunkResult: any, chunkIndex) => {
+      chunkResult.forEach((r: any, i: number) => {
+        const pageIndex = chunkIndex * chunkSize + i;
+        if (pageIndex < json.pages.length) {
+          allFilesEmbeddings.push({
+            id: json.pages[pageIndex].id,
+            materialID: material.id,
+            vector: r.embedding,
+            pageNumber: json.pages[pageIndex].index + 1,
+          });
+        }
+      });
+    });
 
     await tx.insert(embeddingsTable).values(allFilesEmbeddings);
   }); //TODO: se transaction fail allora elimare tutte le immagini appena create da uploadThing
