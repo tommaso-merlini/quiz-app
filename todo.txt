@@ -10,5 +10,3 @@
 [x] success page stripe 
 [] cancel page stripe
 [] mettere un email di contatto {_IMPORTANTE_}
-
-METTERE IL PRICE ID IN STRIPE DASHBOARD PROD

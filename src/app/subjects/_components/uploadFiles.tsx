@@ -92,54 +92,24 @@ export function UploadFiles({ subjectID }: { subjectID: string }) {
             </AlertDescription>
           </Alert>
         </DialogHeader>
-        <Tabs defaultValue="account">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="files">Images and PDFs</TabsTrigger>
-            <TabsTrigger value="text">Text</TabsTrigger>
-          </TabsList>
-          <TabsContent value="files">
-            <FileUploader
-              maxFiles={1}
-              maxSize={100 * 1024 * 1024} //TODO: this is a max of 100 MB, what can i do
-              onValueChange={setFiles}
-            />
-            <DialogFooter className="pt-2 flex flex-row space-x-4">
-              {isLoading && (
-                <div className="w-full mt-4">
-                  <Progress value={progress} className="w-full" />
-                </div>
-              )}
-              <Button onClick={handleUploadFiles} disabled={isLoading}>
-                {!isLoading ? "Upload Files" : "Uploading..."}
-              </Button>
-            </DialogFooter>
-          </TabsContent>
-          <TabsContent value="text">
-            <Input
-              name="name"
-              placeholder="title of the text"
-              required
-              className="mb-2"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Textarea
-              placeholder="Paste your text here"
-              name="text"
-              required
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-            <input type="hidden" name="subjectID" value={subjectID} />
-            <DialogFooter className="pt-2 flex flex-row space-x-4">
-              {isLoading && (
-                <div className="w-full mt-4">
-                  <Progress value={progress} className="w-full" />
-                </div>
-              )}
-            </DialogFooter>
-          </TabsContent>
-        </Tabs>
+
+        <FileUploader
+          maxFiles={1}
+          maxSize={100 * 1024 * 1024} //TODO: this is a max of 100 MB, what can i do
+          onValueChange={setFiles}
+        />
+        <DialogFooter className="pt-2 flex flex-row space-x-4">
+          {isLoading && (
+            <div className="w-full mt-4">
+              <Progress value={progress} className="w-full" />
+            </div>
+          )}
+          <Button onClick={handleUploadFiles} disabled={isLoading}>
+            {!isLoading
+              ? "Upload Files"
+              : "Uploading... (this can up to 3 minutes)"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

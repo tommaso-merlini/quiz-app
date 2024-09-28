@@ -14,6 +14,7 @@ import {
 import { LogOut, Library, AreaChart, LibrarySquare } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 async function logout() {
   "use server";
@@ -40,6 +41,7 @@ export const metadata: Metadata = {
   title: "SlayTest",
   description: "Generate Tests",
 };
+// <LibrarySquare className="mr-2 size-8" />
 
 export default async function RootLayout({
   children,
@@ -53,8 +55,14 @@ export default async function RootLayout({
         <div className="border-b-[1px] border-neutral-100 py-3 px-4">
           <div className="flex flex-row max-w-[1300px] justify-between mx-auto">
             <Link href="/" className="flex items-center justify-center">
-              <LibrarySquare className="mr-2 size-8" />
-              <span className="text-xl font-bold">SlayTest</span>
+              <Image
+                src="/books.png"
+                width={30}
+                height={30}
+                alt="SlayTest"
+                className="mr-1"
+              />
+              <span className="text-2xl font-bold">SlayTest</span>
             </Link>
             {!user ? (
               <div className="flex flex-row justify-between space-x-4">
