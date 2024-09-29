@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -10,53 +12,22 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { redirect } from "next/navigation";
-import { lucia } from "@/components/lucia/auth";
-import { cookies } from "next/headers";
-import { db } from "@/db";
-import { v4 as uuidv4 } from "uuid";
-import { usersTable } from "@/db/schema";
-import { hash } from "@node-rs/argon2";
-
-async function signup(formData: FormData) {
-  "use server";
-
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  if (!email || !password) {
-    throw new Error("shit");
-  }
-
-  const passwordHash = await hash(password, {
-    memoryCost: 19456,
-    timeCost: 2,
-    outputLen: 32,
-    parallelism: 1,
-  });
-
-  const [user] = await db
-    .insert(usersTable)
-    .values({
-      id: uuidv4(),
-      email,
-      hashedPassword: passwordHash,
-    })
-    .returning();
-
-  const session = await lucia.createSession(user.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
-  return redirect("/pricing");
-}
+import { signup } from "./actions";
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Signup() {
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    const result = await signup(formData);
+    if ("error" in result) {
+      setError(result.error);
+    }
+  }
+
   return (
-    <form action={signup}>
+    <form action={handleSubmit}>
       <Card className="mx-auto max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
@@ -64,6 +35,11 @@ export default function Signup() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -76,7 +52,7 @@ export default function Signup() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" name="password" />
+              <Input id="password" type="password" name="password" required />
             </div>
             <Button type="submit" className="w-full">
               Create an account

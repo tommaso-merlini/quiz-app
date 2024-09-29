@@ -1,5 +1,7 @@
-import Link from "next/link";
+"use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,55 +12,21 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getUserByEmail } from "@/db/queries";
-import { verify } from "@node-rs/argon2";
-import { lucia } from "@/components/lucia/auth";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-
-async function login(formData: FormData) {
-  "use server";
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  if (!email || !password) {
-    throw new Error("shit");
-  }
-
-  const existingUser = await getUserByEmail(email);
-  if (!existingUser) {
-    throw new Error("shit");
-    // return {
-    //   error: "Incorrect username or password",
-    // };
-  }
-
-  const validPassword = await verify(existingUser.hashedPassword, password, {
-    memoryCost: 19456,
-    timeCost: 2,
-    outputLen: 32,
-    parallelism: 1,
-  });
-  if (!validPassword) {
-    throw new Error("shit");
-    // return {
-    //   error: "Incorrect username or password",
-    // };
-  }
-
-  const session = await lucia.createSession(existingUser.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
-  return redirect("/subjects");
-}
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { login } from "./actions";
 
 export default function Signin() {
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(formData: FormData) {
+    const result = await login(formData);
+    if ("error" in result) {
+      setError(result.error);
+    }
+  }
+
   return (
-    <form action={login}>
+    <form action={handleSubmit}>
       <Card className="mx-auto max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Sign In</CardTitle>
@@ -66,6 +34,11 @@ export default function Signin() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input

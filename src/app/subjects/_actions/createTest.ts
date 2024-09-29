@@ -84,9 +84,6 @@ export async function createTest(fd: FormData) {
       topic: validatedData.topic,
     })
     .returning();
-  if (!test) {
-    throw new Error("shit");
-  }
 
   redirect(`/tests/${test.id}`);
 }

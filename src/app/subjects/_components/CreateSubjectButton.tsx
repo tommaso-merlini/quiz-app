@@ -46,7 +46,13 @@ export function CreateSubjectButton() {
               Create a new subject here. Click create when youre done
             </DialogDescription>
           </DialogHeader>
-          <Input type="text" placeholder="Math" name="name" className="mb-4" />
+          <Input
+            type="text"
+            placeholder="Math"
+            name="name"
+            className="mb-4"
+            required
+          />
           <DialogFooter>
             <SubmitButton />
           </DialogFooter>

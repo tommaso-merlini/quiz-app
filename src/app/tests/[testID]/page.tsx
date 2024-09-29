@@ -15,11 +15,8 @@ export default async function Test({ params }: { params: { testID: string } }) {
   }
   const test = await getTestByID(params.testID);
   const subject = await getSubjectByID(test.subjectID);
-  if (test.subjectID != subject.id) {
-    throw new Error("shit");
-  }
   if (subject.userID != user.id) {
-    throw new Error("shit");
+    throw new Error("unauthorized");
   }
   const now = new Date() as any;
   const diff = (now - (test.createdAt as any)) / 1000 / 60;
@@ -33,7 +30,7 @@ export default async function Test({ params }: { params: { testID: string } }) {
         topic={test.topic || undefined}
         questions={test.questions}
         testID={test.id}
-        subjectID={subject.id}
+        subjectID={test.subjectID}
       />
     </div>
   );
