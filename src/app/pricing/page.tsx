@@ -13,6 +13,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createCheckoutSession } from "../stripe/createCheckoutSession";
 import SlideShow from "./_components/slideshow";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formSubmitted = async (formData: FormData) => {
   "use server";
@@ -38,15 +39,16 @@ export default async function PricingPage() {
   const monthlyPrice = 5.99;
 
   const features = [
-    "Unlimited projects",
-    "Unlimited notes",
-    "Test analytics",
-    "Multiple question types",
+    "Unlimited Projects",
+    "Unlimited Notes Uploads",
+    "Test Analytics",
+    "Multiple Question Types",
+    "Access to Futute Updates",
   ];
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md mb-20 mt-10">
         <CardHeader>
           <CardTitle className="text-center">
             <span className="text-sm">Unlimited access to</span>
@@ -54,7 +56,6 @@ export default async function PricingPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <SlideShow />
           <div className="text-4xl font-bold mb-4">
             ${monthlyPrice}
             <span className="text-xl font-normal text-gray-500">
@@ -79,6 +80,43 @@ export default async function PricingPage() {
           </form>
         </CardFooter>
       </Card>
+
+      <Tabs
+        defaultValue="test"
+        className="w-full bg-gray-50 p-3 rounded-xl border border-gray-100"
+      >
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="test">Tests</TabsTrigger>
+          <TabsTrigger value="grade">Grades</TabsTrigger>
+          <TabsTrigger value="subject">Subjects</TabsTrigger>
+        </TabsList>
+        <TabsContent value="test">
+          <div className="w-full aspect-video overflow-hidden">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-100 h-full object-cover"
+            >
+              <source src="/test.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </TabsContent>
+        <TabsContent value="grade">
+          <video autoPlay muted loop playsInline className="object-cover">
+            <source src="/grade.webm" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </TabsContent>
+        <TabsContent value="subject">
+          <video autoPlay muted loop playsInline className="object-cover">
+            <source src="/subject.webm" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

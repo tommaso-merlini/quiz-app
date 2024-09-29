@@ -38,12 +38,15 @@ export async function dumpFiles(formData: FormData) {
       body: newForm,
     },
   );
+  console.log(response.status);
+  if (response.status != 200) {
+    throw new Error("error converting pdf to images");
+  }
 
   const json = (await response.json()) as Response;
 
   console.log("immagini fatte");
 
-  const allFilesEmbeddings: InsertEmbedding[] = [];
   await db.transaction(async (tx) => {
     const [material] = await tx
       .insert(materialsTable)
@@ -87,7 +90,7 @@ export async function dumpFiles(formData: FormData) {
     const embeddingPromises = chunks.map((chunk) => embed(chunk));
     const embeddingResults = await Promise.all(embeddingPromises);
 
-    let allFilesEmbeddings: InsertEmbedding[] = [];
+    const allFilesEmbeddings: InsertEmbedding[] = [];
 
     embeddingResults.forEach((chunkResult: any, chunkIndex) => {
       chunkResult.forEach((r: any, i: number) => {

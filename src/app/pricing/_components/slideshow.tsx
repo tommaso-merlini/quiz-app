@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,14 +21,6 @@ export default function SlideShow() {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 3000); // Change slide every 3 seconds
-
-    return () => clearInterval(timer);
-  }, []);
 
   const handlers = useSwipeable({
     onSwipedLeft: () => nextSlide(),
@@ -54,6 +46,20 @@ export default function SlideShow() {
                     height={400}
                     className="w-full h-64 object-cover"
                   />*/}
+                  {index === 0 ? (
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="object-cover"
+                    >
+                      <source src="/test.webm" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    ""
+                  )}
                   <div className="w-[800px] h-[400px] bg-red-400"></div>
                 </CarouselItem>
               ))}

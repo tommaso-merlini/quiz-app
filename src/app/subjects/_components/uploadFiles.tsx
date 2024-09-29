@@ -107,7 +107,7 @@ export function UploadFiles({ subjectID }: { subjectID: string }) {
           <Button onClick={handleUploadFiles} disabled={isLoading}>
             {!isLoading
               ? "Upload Files"
-              : "Uploading... (this can up to 3 minutes)"}
+              : "Uploading... (this can take up to 3 minutes)"}
           </Button>
         </DialogFooter>
       </DialogContent>
