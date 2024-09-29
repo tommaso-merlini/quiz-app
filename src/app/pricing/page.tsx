@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import { createCheckoutSession } from "../stripe/createCheckoutSession";
 import SlideShow from "./_components/slideshow";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductShowcase from "../_components/ProductShowcase";
 
 const formSubmitted = async (formData: FormData) => {
   "use server";
@@ -80,43 +81,7 @@ export default async function PricingPage() {
           </form>
         </CardFooter>
       </Card>
-
-      <Tabs
-        defaultValue="test"
-        className="w-full bg-gray-50 p-3 rounded-xl border border-gray-100"
-      >
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="test">Tests</TabsTrigger>
-          <TabsTrigger value="grade">Grades</TabsTrigger>
-          <TabsTrigger value="subject">Subjects</TabsTrigger>
-        </TabsList>
-        <TabsContent value="test">
-          <div className="w-full aspect-video overflow-hidden">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-100 h-full object-cover"
-            >
-              <source src="/test.webm" type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </TabsContent>
-        <TabsContent value="grade">
-          <video autoPlay muted loop playsInline className="object-cover">
-            <source src="/grade.webm" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </TabsContent>
-        <TabsContent value="subject">
-          <video autoPlay muted loop playsInline className="object-cover">
-            <source src="/subject.webm" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </TabsContent>
-      </Tabs>
+      <ProductShowcase />
     </div>
   );
 }

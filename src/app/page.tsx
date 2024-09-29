@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import SlideShow from "./pricing/_components/slideshow";
+import ProductShowcase from "./_components/ProductShowcase";
 
 export default async function Home() {
   const { user } = await auth();
@@ -29,34 +30,7 @@ export default async function Home() {
           <Button size="lg">Start Studying!</Button>
         </Link>
       </section>
-      <Tabs
-        defaultValue="test"
-        className="w-full bg-gray-50 p-3 rounded-xl border border-gray-100"
-      >
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="test">Tests</TabsTrigger>
-          <TabsTrigger value="grade">Grades</TabsTrigger>
-          <TabsTrigger value="subject">Subjects</TabsTrigger>
-        </TabsList>
-        <TabsContent value="test">
-          <video autoPlay muted loop playsInline className="object-cover">
-            <source src="/test.webm" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </TabsContent>
-        <TabsContent value="grade">
-          <video autoPlay muted loop playsInline className="object-cover">
-            <source src="/grade.webm" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </TabsContent>
-        <TabsContent value="subject">
-          <video autoPlay muted loop playsInline className="object-cover">
-            <source src="/subject.webm" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </TabsContent>
-      </Tabs>
+      <ProductShowcase />
       <p className="text-gray-500 mb-10 text-center text-sm">Built with love</p>
     </>
   );
