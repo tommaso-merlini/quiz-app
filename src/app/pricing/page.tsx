@@ -44,7 +44,7 @@ export default async function PricingPage() {
     "Unlimited Notes Uploads",
     "Test Analytics",
     "Multiple Question Types",
-    "Access to Futute Updates",
+    "Access to Future Updates",
   ];
 
   return (

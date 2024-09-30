@@ -6,10 +6,9 @@ import { db } from "@/db";
 import { v4 as uuidv4 } from "uuid";
 import { usersTable } from "@/db/schema";
 import { hash } from "@node-rs/argon2";
+import { sql } from "drizzle-orm";
 
 export async function signup(formData: FormData) {
-  "use server";
-
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -25,24 +24,37 @@ export async function signup(formData: FormData) {
       parallelism: 1,
     });
 
-    const [user] = await db
-      .insert(usersTable)
-      .values({
-        id: uuidv4(),
-        email,
-        hashedPassword: passwordHash,
-      })
-      .returning();
+    let user;
 
-    const session = await lucia.createSession(user.id, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes,
-    );
-    return redirect("/pricing");
+    await db.transaction(async (tx) => {
+      const [insertedUser] = await tx
+        .insert(usersTable)
+        .values({
+          id: uuidv4(),
+          email,
+          hashedPassword: passwordHash,
+        })
+        .returning();
+
+      user = insertedUser;
+      if (!user) {
+        throw new Error("Failed to create user");
+      }
+
+      const session = await lucia.createSession(user.id, {});
+      const sessionCookie = lucia.createSessionCookie(session.id);
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
+    });
+
+    return { success: true };
   } catch (error) {
+    console.error(error);
     return { error: "An error occurred during signup. Please try again." };
+  } finally {
+    return redirect("/pricing");
   }
 }

@@ -39,7 +39,11 @@ async function logout() {
 
 export const metadata: Metadata = {
   title: "SlayTest",
-  description: "Generate Tests",
+  description:
+    "Turn your notes into tests that actually prep you for exams. Upload once, practice infinitely.",
+  icons: {
+    icon: "favicon.ico",
+  },
 };
 // <LibrarySquare className="mr-2 size-8" />
 
