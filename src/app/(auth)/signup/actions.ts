@@ -40,12 +40,9 @@ export async function signup(formData: FormData) {
       sessionCookie.value,
       sessionCookie.attributes,
     );
-
-    return { success: true };
   } catch (error) {
     console.error(error);
     return { error: "An error occurred during signup. Please try again." };
-  } finally {
-    return redirect("/pricing");
   }
+  return redirect("/pricing");
 }
