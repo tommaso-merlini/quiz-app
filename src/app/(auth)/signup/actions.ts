@@ -24,31 +24,22 @@ export async function signup(formData: FormData) {
       parallelism: 1,
     });
 
-    let user;
+    const [user] = await db
+      .insert(usersTable)
+      .values({
+        id: uuidv4(),
+        email,
+        hashedPassword: passwordHash,
+      })
+      .returning();
 
-    await db.transaction(async (tx) => {
-      const [insertedUser] = await tx
-        .insert(usersTable)
-        .values({
-          id: uuidv4(),
-          email,
-          hashedPassword: passwordHash,
-        })
-        .returning();
-
-      user = insertedUser;
-      if (!user) {
-        throw new Error("Failed to create user");
-      }
-
-      const session = await lucia.createSession(user.id, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes,
-      );
-    });
+    const session = await lucia.createSession(user.id, {});
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes,
+    );
 
     return { success: true };
   } catch (error) {
