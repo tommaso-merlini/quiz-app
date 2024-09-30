@@ -19,11 +19,11 @@ export async function createCheckoutSession(priceId: string, userID: string) {
     mode: "subscription",
     success_url:
       process.env.NODE_ENV === "production"
-        ? "https://www.slaytest/success"
+        ? "https://www.slaytest.com/success"
         : "http://localhost:3001/success",
     cancel_url:
       process.env.NODE_ENV === "production"
-        ? "https://www.slaytest/pricing"
+        ? "https://www.slaytest.com/pricing"
         : "http://localhost:3001/pricing",
     metadata: {
       userID,
