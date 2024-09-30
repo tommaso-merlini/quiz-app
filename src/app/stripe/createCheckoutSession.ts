@@ -17,8 +17,14 @@ export async function createCheckoutSession(priceId: string, userID: string) {
       },
     ],
     mode: "subscription",
-    success_url: "http://localhost:3001/success",
-    cancel_url: "http://localhost:3001/pricing",
+    success_url:
+      process.env.NODE_ENV === "production"
+        ? "https://www.slaytest/success"
+        : "http://localhost:3001/success",
+    cancel_url:
+      process.env.NODE_ENV === "production"
+        ? "https://www.slaytest/pricing"
+        : "http://localhost:3001/pricing",
     metadata: {
       userID,
     },
