@@ -22,7 +22,7 @@ export default function Signup() {
   async function handleSubmit(formData: FormData) {
     const result = await signup(formData);
     if ("error" in result) {
-      setError(result.error);
+      setError(result.error!);
     }
   }
 
