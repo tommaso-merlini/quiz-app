@@ -116,7 +116,9 @@ export function CustomizeTestForm({
               </Button>
             </DialogTrigger>
             <Button size="lg" type="submit" disabled={isSubmitted}>
-              {!isSubmitted ? "Start Test!" : "Creating Test..."}
+              {!isSubmitted
+                ? "Start Test!"
+                : "Creating Test... (can take up to a minute)"}
             </Button>
           </DialogFooter>
         </form>

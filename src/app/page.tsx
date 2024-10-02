@@ -31,6 +31,8 @@ export default async function Home() {
         </Link>
       </section>
       <ProductShowcase />
+      <br />
+      <br />
       <p className="text-gray-500 mb-10 text-center text-sm">Built with love</p>
     </>
   );

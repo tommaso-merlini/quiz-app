@@ -21,7 +21,7 @@ export default function ProductShowcase() {
   return (
     <Tabs
       defaultValue="test"
-      className="w-full bg-gray-50 p-3 rounded-xl border border-gray-100"
+      className="w-full bg-gray-50 p-3 rounded-xl border border-gray-100 shadow-[0_0_30px_rgba(0,0,0,0.1)]"
     >
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="test">Tests</TabsTrigger>
