@@ -90,6 +90,8 @@ export async function dumpFiles(formData: FormData) {
     const embeddingPromises = chunks.map((chunk) => embed(chunk));
     const embeddingResults = await Promise.all(embeddingPromises);
 
+    console.log("embedding fatto");
+
     const allFilesEmbeddings: InsertEmbedding[] = [];
 
     embeddingResults.forEach((chunkResult: any, chunkIndex) => {
